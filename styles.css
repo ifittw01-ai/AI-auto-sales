@@ -1135,12 +1135,12 @@ body {
     margin-top: 10px;
 }
 
-/* 留資按鈕 */
+/* 提交資料按鈕 */
 .submit-info-btn {
     width: 100%;
-    background: var(--white);
-    color: var(--text-dark);
-    border: 2px solid #667eea;
+    background: var(--gradient-primary);
+    color: var(--white);
+    border: none;
     padding: 18px 30px;
     font-size: 1.2rem;
     font-weight: 600;
@@ -1151,13 +1151,18 @@ body {
     justify-content: center;
     gap: 10px;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
 }
 
 .submit-info-btn:hover {
-    background: rgba(102, 126, 234, 0.05);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+}
+
+.submit-info-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
 }
 
 /* 購買按鈕 */
@@ -1202,6 +1207,32 @@ body {
     margin-top: 20px;
     color: var(--text-light);
     font-size: 0.9rem;
+}
+
+/* 查看資料連結 */
+.view-data-link {
+    text-align: center;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.view-data-link a {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.view-data-link a:hover {
+    background: rgba(102, 126, 234, 0.1);
+    transform: translateY(-2px);
 }
 
 /* 响应式设计 */

@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI自動引客系統 - 打造一人公司賺錢機器</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- SheetJS 用於生成 Excel -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
 </head>
 <body>
     <!-- 顶部优惠倒计时横幅 -->
@@ -511,37 +513,6 @@
                             </div>
                         </div>
                         
-                        <!-- 付款部分（可選） -->
-                        <div id="paymentSection" class="form-section payment-section" style="display: none;">
-                            <h3>💳 付款方式</h3>
-                            
-                            <div class="payment-methods">
-                                <label class="payment-option">
-                                    <input type="radio" name="payment" value="credit" checked>
-                                    <span class="payment-label">
-                                        <span class="payment-icon">💳</span>
-                                        信用卡 / 金融卡
-                                    </span>
-                                </label>
-                                
-                                <label class="payment-option">
-                                    <input type="radio" name="payment" value="paypal">
-                                    <span class="payment-label">
-                                        <span class="payment-icon">🅿️</span>
-                                        PayPal
-                                    </span>
-                                </label>
-                                
-                                <label class="payment-option">
-                                    <input type="radio" name="payment" value="transfer">
-                                    <span class="payment-label">
-                                        <span class="payment-icon">🏦</span>
-                                        銀行轉帳
-                                    </span>
-                                </label>
-                            </div>
-                        </div>
-                        
                         <div class="form-section">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="termsCheckbox" name="terms" required>
@@ -554,21 +525,20 @@
                             </label>
                         </div>
                         
-                        <!-- 雙按鈕選項 -->
+                        <!-- 提交按鈕 -->
                         <div class="form-buttons">
-                            <button type="button" id="leaveInfoBtn" class="submit-info-btn">
-                                <span>📝 留下資料，稍後決定</span>
-                            </button>
-                            
-                            <button type="button" id="buyNowBtn" class="submit-order-btn">
-                                <span>✅ 立即購買 NT$1,727</span>
-                                <span class="btn-icon">→</span>
+                            <button type="submit" id="submitBtn" class="submit-info-btn">
+                                <span>📝 提交資料</span>
                             </button>
                         </div>
                         
                         <div class="secure-notice">
                             <span>🔒</span>
-                            <span>安全加密付款 | 7天無條件退款保證</span>
+                            <span>您的資料將安全儲存在本設備 | 隨時可以查看或匯出</span>
+                        </div>
+                        
+                        <div class="view-data-link">
+                            <a href="records.html" target="_blank">📊 查看已儲存的資料</a>
                         </div>
                     </form>
                 </div>

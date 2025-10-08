@@ -1,3 +1,54 @@
+// ========================================
+// Google 表單設定
+// ========================================
+// 請按照「Google表單整合指南.md」的步驟取得以下資訊
+const GOOGLE_FORM_CONFIG = {
+    // 是否啟用 Google 表單（true = 傳送到 Google, false = 本地儲存）
+    enabled: true,  // ✅ 已啟用 Google 表單
+    
+    // 您的 Google 表單 ID（從預填連結取得）
+    formId: '1FAIpQLSfgpRp3GyT27oanx3_pLwAlGVgCGdvH-gPnyS_fW-LsueGpFw',  // ✅ 從預填連結取得的正確 ID
+    
+    // 各欄位的 entry ID（從預填連結取得）
+    fields: {
+        fullName: 'entry.1124417422',     // ← 替換成您的姓名 entry ID
+        email: 'entry.1571446378',        // ← 替換成您的 Email entry ID
+        phone: 'entry.51167075',        // ← 替換成您的電話 entry ID
+        country: 'entry.251150813',      // ← 替換成您的國家 entry ID
+        industry: 'entry.828038711',     // ← 替換成您的行業 entry ID
+        newsletter: 'entry.1980319875'    // ← 替換成您的訂閱 entry ID
+    }
+};
+
+// 國家對應表（確保與 Google 表單的選項一致）
+const COUNTRY_NAMES = {
+    'TW': '台灣',
+    'HK': '香港',
+    'SG': '新加坡',
+    'MY': '馬來西亞',
+    'CN': '中國',
+    'US': '美國',
+    'other': '其他'
+};
+
+// 行業對應表（確保與 Google 表單的選項一致）
+const INDUSTRY_NAMES = {
+    'spiritual': '身心靈導師 / 玄學',
+    'beauty': '美容 / 美髮',
+    'education': '教育 / 培訓',
+    'insurance': '保險 / 金融',
+    'realestate': '房地產',
+    'consultant': '諮詢顧問',
+    'freelancer': '自由工作者',
+    'coach': '個人教練',
+    'ecommerce': '電商 / 微商',
+    'other': '其他'
+};
+
+// ========================================
+// 頁面功能
+// ========================================
+
 // 倒计时功能
 function initCountdown() {
     // 设置倒计时结束时间（例如：今天晚上11:59pm）
@@ -117,107 +168,144 @@ function initModal() {
     });
 }
 
-// 处理订单表单提交
+// ========================================
+// 資料儲存功能
+// ========================================
+
+// LocalStorage 資料管理
+const STORAGE_KEY = 'customerLeads';
+
+// 儲存資料到 localStorage（本地備份）
+function saveToLocalStorage(data) {
+    try {
+        // 取得現有資料
+        let leads = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        
+        // 加入新資料
+        const newLead = {
+            id: Date.now(), // 使用時間戳作為 ID
+            ...data,
+            createdAt: new Date().toISOString()
+        };
+        
+        leads.push(newLead);
+        
+        // 儲存回 localStorage
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(leads));
+        
+        return { success: true, data: newLead };
+    } catch (error) {
+        console.error('本地儲存失敗:', error);
+        return { success: false, error: error.message };
+    }
+}
+
+// 提交資料到 Google 表單
+async function submitToGoogleForm(data) {
+    try {
+        // 建立表單提交網址（使用 /d/e/ 格式，因為 Form ID 是從預填連結取得）
+        const formUrl = `https://docs.google.com/forms/d/e/${GOOGLE_FORM_CONFIG.formId}/formResponse`;
+        
+        // 準備表單資料
+        const formData = new FormData();
+        
+        // 添加所有欄位資料
+        formData.append(GOOGLE_FORM_CONFIG.fields.fullName, data.fullName);
+        formData.append(GOOGLE_FORM_CONFIG.fields.email, data.email);
+        formData.append(GOOGLE_FORM_CONFIG.fields.phone, data.phone);
+        formData.append(GOOGLE_FORM_CONFIG.fields.country, COUNTRY_NAMES[data.country] || data.country);
+        formData.append(GOOGLE_FORM_CONFIG.fields.industry, INDUSTRY_NAMES[data.industry] || data.industry);
+        
+        // 訂閱電子報（核取方塊）- 值必須是「是」
+        if (data.newsletter) {
+            formData.append(GOOGLE_FORM_CONFIG.fields.newsletter, '是');
+        }
+        
+        // Google Forms 需要的額外參數
+        formData.append('fvv', '1');
+        formData.append('partialResponse', '[null,null,"0"]');
+        formData.append('pageHistory', '0');
+        
+        // 使用 fetch 提交（no-cors 模式）
+        await fetch(formUrl, {
+            method: 'POST',
+            body: formData,
+            mode: 'no-cors' // Google Forms 需要使用 no-cors
+        });
+        
+        console.log('✅ 資料已成功提交到 Google 表單');
+        return { success: true };
+    } catch (error) {
+        console.error('❌ Google 表單提交失敗:', error);
+        return { success: false, error: error.message };
+    }
+}
+
+// 處理表單提交
 function initOrderForm() {
     const form = document.getElementById('orderForm');
-    const leaveInfoBtn = document.getElementById('leaveInfoBtn');
-    const buyNowBtn = document.getElementById('buyNowBtn');
-    const paymentSection = document.getElementById('paymentSection');
-    const termsCheckbox = document.getElementById('termsCheckbox');
+    const submitBtn = document.getElementById('submitBtn');
     
-    // 留下資料按鈕
-    leaveInfoBtn.addEventListener('click', (e) => {
+    form.addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        // 驗證基本資料是否填寫完整
-        if (!form.checkValidity()) {
-            // 移除付款部分的必填要求
-            const paymentInputs = paymentSection.querySelectorAll('input');
-            paymentInputs.forEach(input => {
-                input.removeAttribute('required');
-            });
-            form.reportValidity();
-            return;
-        }
-        
-        // 獲取基本資料
-        const formData = new FormData(form);
-        const data = {
-            type: 'lead', // 標記為留資
-            fullName: formData.get('fullName'),
-            email: formData.get('email'),
-            phone: formData.get('phone'),
-            country: formData.get('country'),
-            industry: formData.get('industry'),
-            newsletter: formData.get('newsletter')
-        };
-        
-        console.log('留資數據:', data);
-        
-        // 這裡可以發送到後端API
-        // fetch('/api/leads', {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify(data)
-        // })
-        // .then(response => response.json())
-        // .then(result => {
-        //     window.location.href = '/thank-you-lead';
-        // });
-        
-        // 演示版本：顯示成功消息
-        alert(`✅ 資料已收到！\n\n感謝 ${data.fullName}！\n我們已將詳細資訊發送到 ${data.email}\n我們的客服會盡快與您聯繫。\n\n這是演示版本，實際網站會跳轉到感謝頁面。`);
-        
-        closeModal();
-        form.reset();
-    });
-    
-    // 立即購買按鈕
-    buyNowBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        
-        // 顯示付款部分
-        paymentSection.style.display = 'block';
-        
-        // 驗證所有資料是否填寫完整
+        // 驗證表單
         if (!form.checkValidity()) {
             form.reportValidity();
             return;
         }
         
-        // 獲取完整訂單數據
+        // 顯示載入狀態
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span>⏳ 處理中...</span>';
+        
+        // 獲取表單資料
         const formData = new FormData(form);
         const data = {
-            type: 'order', // 標記為訂單
             fullName: formData.get('fullName'),
             email: formData.get('email'),
             phone: formData.get('phone'),
             country: formData.get('country'),
             industry: formData.get('industry'),
-            payment: formData.get('payment'),
-            terms: formData.get('terms'),
-            newsletter: formData.get('newsletter')
+            newsletter: formData.get('newsletter') === 'on'
         };
         
-        console.log('訂單數據:', data);
+        console.log('客戶資料:', data);
         
-        // 這裡可以發送到後端API並跳轉到支付頁面
-        // fetch('/api/orders', {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify(data)
-        // })
-        // .then(response => response.json())
-        // .then(result => {
-        //     window.location.href = result.paymentUrl;
-        // });
+        let googleResult = { success: true };
+        let localResult = { success: true };
         
-        // 演示版本：顯示成功消息
-        alert(`✅ 訂單已收到！\n\n感謝 ${data.fullName} 的訂購！\n我們已將確認郵件發送到 ${data.email}\n\n這是演示版本，實際網站會跳轉到支付頁面。`);
+        // 如果啟用 Google 表單，提交到 Google
+        if (GOOGLE_FORM_CONFIG.enabled) {
+            googleResult = await submitToGoogleForm(data);
+            
+            if (!googleResult.success) {
+                console.warn('Google 表單提交失敗，將儲存到本地');
+            }
+        }
         
-        closeModal();
-        form.reset();
-        paymentSection.style.display = 'none';
+        // 同時也儲存到本地作為備份
+        localResult = saveToLocalStorage(data);
+        
+        // 恢復按鈕狀態
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<span>📝 提交資料</span>';
+        
+        // 判斷結果並顯示訊息
+        if (GOOGLE_FORM_CONFIG.enabled && googleResult.success) {
+            // Google 表單模式成功
+            alert(`✅ 資料已成功提交！\n\n感謝 ${data.fullName}！\n您的資料已傳送完成。\n我們的客服會盡快與您聯繫。`);
+            closeModal();
+            form.reset();
+        } else if (localResult.success) {
+            // 本地儲存模式成功
+            alert(`✅ 資料已成功儲存！\n\n感謝 ${data.fullName}！\n您的資料已安全儲存在本設備中。\n\n您可以點擊「查看已儲存的資料」來查看或匯出 Excel 檔案。`);
+            closeModal();
+            form.reset();
+        } else {
+            // 失敗
+            alert(`❌ 儲存失敗\n\n請稍後再試，或聯繫客服。`);
+        }
     });
 }
 

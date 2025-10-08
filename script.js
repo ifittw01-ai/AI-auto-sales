@@ -1,24 +1,40 @@
 // ========================================
 // Google 表單設定
 // ========================================
-// 請按照「Google表單整合指南.md」的步驟取得以下資訊
-const GOOGLE_FORM_CONFIG = {
-    // 是否啟用 Google 表單（true = 傳送到 Google, false = 本地儲存）
-    enabled: true,  // ✅ 已啟用 Google 表單
-    
-    // 您的 Google 表單 ID（從預填連結取得）
-    formId: '1FAIpQLSfgpRp3GyT27oanx3_pLwAlGVgCGdvH-gPnyS_fW-LsueGpFw',  // ✅ 從預填連結取得的正確 ID
-    
-    // 各欄位的 entry ID（從預填連結取得）
+// 從 localStorage 載入設定，如果沒有則使用預設值
+
+// 預設設定（後備用）
+const DEFAULT_GOOGLE_FORM_CONFIG = {
+    enabled: true,
+    formId: '1FAIpQLSfgpRp3GyT27oanx3_pLwAlGVgCGdvH-gPnyS_fW-LsueGpFw',
     fields: {
-        fullName: 'entry.1124417422',     // ← 替換成您的姓名 entry ID
-        email: 'entry.1571446378',        // ← 替換成您的 Email entry ID
-        phone: 'entry.51167075',        // ← 替換成您的電話 entry ID
-        country: 'entry.251150813',      // ← 替換成您的國家 entry ID
-        industry: 'entry.828038711',     // ← 替換成您的行業 entry ID
-        newsletter: 'entry.1980319875'    // ← 替換成您的訂閱 entry ID
+        fullName: 'entry.1124417422',
+        email: 'entry.1571446378',
+        phone: 'entry.51167075',
+        country: 'entry.251150813',
+        industry: 'entry.828038711',
+        newsletter: 'entry.1980319875'
     }
 };
+
+// 從 localStorage 載入設定
+function loadGoogleFormConfig() {
+    try {
+        const savedConfig = localStorage.getItem('googleFormConfig');
+        if (savedConfig) {
+            const config = JSON.parse(savedConfig);
+            console.log('✅ 已載入自訂設定');
+            return config;
+        }
+    } catch (error) {
+        console.warn('⚠️ 載入設定失敗，使用預設設定:', error);
+    }
+    console.log('ℹ️ 使用預設設定');
+    return DEFAULT_GOOGLE_FORM_CONFIG;
+}
+
+// 載入設定
+const GOOGLE_FORM_CONFIG = loadGoogleFormConfig();
 
 // 國家對應表（確保與 Google 表單的選項一致）
 const COUNTRY_NAMES = {

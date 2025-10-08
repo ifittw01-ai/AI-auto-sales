@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系統設定 - AI自動引客系統</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .setup-container {
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+
+        .setup-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+        }
+
+        .setup-header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .setup-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .setup-card {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .setup-card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .info-box {
+            background: #f0f4ff;
+            border-left: 4px solid #667eea;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            border-radius: 5px;
+        }
+
+        .info-box h3 {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+
+        .info-box p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        .info-box code {
+            background: white;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #e74c3c;
+        }
+
+        .form-group-setup {
+            margin-bottom: 25px;
+        }
+
+        .form-group-setup label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1rem;
+        }
+
+        .form-group-setup input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s ease;
+        }
+
+        .form-group-setup input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group-setup small {
+            display: block;
+            margin-top: 5px;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .toggle-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 30px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        .toggle-switch input:checked + .toggle-slider {
+            background-color: #28a745;
+        }
+
+        .toggle-switch input:checked + .toggle-slider:before {
+            transform: translateX(30px);
+        }
+
+        .toggle-label {
+            flex: 1;
+        }
+
+        .toggle-label strong {
+            display: block;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        .toggle-label span {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn-primary {
+            flex: 1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            flex: 1;
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: #f0f4ff;
+        }
+
+        .btn-test {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-test:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .status-message {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .status-message.success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            color: #155724;
+        }
+
+        .status-message.error {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            color: #721c24;
+        }
+
+        .status-message.info {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            color: #0c5460;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            transform: translateX(-5px);
+        }
+
+        .example-section {
+            background: #fff9e6;
+            border-left: 4px solid #ffc107;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .example-section h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .example-section pre {
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 0.9rem;
+        }
+
+        .current-config {
+            background: #e7f3ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .current-config h3 {
+            color: #004085;
+            margin-bottom: 15px;
+        }
+
+        .current-config pre {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="setup-container">
+        <a href="index.html" class="back-link">← 返回主頁</a>
+
+        <div class="setup-header">
+            <h1>🔧 系統設定</h1>
+            <p>設定您的 Google 表單整合資訊</p>
+        </div>
+
+        <!-- 當前配置顯示 -->
+        <div class="setup-card">
+            <h2>📊 當前設定</h2>
+            <div class="current-config" id="currentConfigDisplay">
+                <h3>目前的設定狀態：</h3>
+                <pre id="configPreview">載入中...</pre>
+            </div>
+        </div>
+
+        <!-- 設定表單 -->
+        <div class="setup-card">
+            <h2>⚙️ Google 表單設定</h2>
+
+            <div class="info-box">
+                <h3>📝 如何取得這些資訊？</h3>
+                <p>1. 建立您的 Google 表單，加入所需的欄位</p>
+                <p>2. 在 Google 表單右上角點選「⋮」→「取得預填連結」</p>
+                <p>3. 填寫每個欄位的範例值，然後點擊「取得連結」</p>
+                <p>4. 複製連結，從中提取 <code>formId</code> 和各欄位的 <code>entry.XXXXXX</code></p>
+            </div>
+
+            <form id="setupForm">
+                <!-- 啟用/停用 Google 表單 -->
+                <div class="toggle-section">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="googleFormEnabled" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <div class="toggle-label">
+                        <strong>啟用 Google 表單整合</strong>
+                        <span>關閉後將僅使用本地儲存</span>
+                    </div>
+                </div>
+
+                <!-- Form ID -->
+                <div class="form-group-setup">
+                    <label for="formId">Google 表單 ID *</label>
+                    <input 
+                        type="text" 
+                        id="formId" 
+                        name="formId" 
+                        placeholder="1FAIpQLSfgpRp3GyT27oanx3_pLwAlGVgCGdvH-gPnyS_fW-LsueGpFw"
+                        required
+                    >
+                    <small>從預填連結的 /d/e/ 後面部分複製</small>
+                </div>
+
+                <div class="example-section">
+                    <h4>範例：</h4>
+                    <pre>https://docs.google.com/forms/d/e/<strong style="color: #e74c3c;">1FAIpQLSfgpRp3GyT27oanx3_pLwAlGVgCGdvH-gPnyS_fW-LsueGpFw</strong>/viewform?...</pre>
+                    <p>複製紅色部分作為 Form ID</p>
+                </div>
+
+                <h3 style="margin-top: 30px; margin-bottom: 20px;">欄位 Entry ID 設定</h3>
+
+                <!-- 姓名欄位 -->
+                <div class="form-group-setup">
+                    <label for="fieldFullName">姓名欄位 Entry ID *</label>
+                    <input 
+                        type="text" 
+                        id="fieldFullName" 
+                        name="fieldFullName" 
+                        placeholder="entry.1124417422"
+                        required
+                    >
+                    <small>對應表單中的「姓名」欄位</small>
+                </div>
+
+                <!-- Email 欄位 -->
+                <div class="form-group-setup">
+                    <label for="fieldEmail">Email 欄位 Entry ID *</label>
+                    <input 
+                        type="text" 
+                        id="fieldEmail" 
+                        name="fieldEmail" 
+                        placeholder="entry.1571446378"
+                        required
+                    >
+                    <small>對應表單中的「電子郵件」欄位</small>
+                </div>
+
+                <!-- 電話欄位 -->
+                <div class="form-group-setup">
+                    <label for="fieldPhone">電話欄位 Entry ID *</label>
+                    <input 
+                        type="text" 
+                        id="fieldPhone" 
+                        name="fieldPhone" 
+                        placeholder="entry.51167075"
+                        required
+                    >
+                    <small>對應表單中的「電話」欄位</small>
+                </div>
+
+                <!-- 國家欄位 -->
+                <div class="form-group-setup">
+                    <label for="fieldCountry">國家欄位 Entry ID *</label>
+                    <input 
+                        type="text" 
+                        id="fieldCountry" 
+                        name="fieldCountry" 
+                        placeholder="entry.251150813"
+                        required
+                    >
+                    <small>對應表單中的「國家/地區」欄位</small>
+                </div>
+
+                <!-- 行業欄位 -->
+                <div class="form-group-setup">
+                    <label for="fieldIndustry">行業欄位 Entry ID *</label>
+                    <input 
+                        type="text" 
+                        id="fieldIndustry" 
+                        name="fieldIndustry" 
+                        placeholder="entry.828038711"
+                        required
+                    >
+                    <small>對應表單中的「行業」欄位</small>
+                </div>
+
+                <!-- 訂閱欄位 -->
+                <div class="form-group-setup">
+                    <label for="fieldNewsletter">訂閱電子報欄位 Entry ID *</label>
+                    <input 
+                        type="text" 
+                        id="fieldNewsletter" 
+                        name="fieldNewsletter" 
+                        placeholder="entry.1980319875"
+                        required
+                    >
+                    <small>對應表單中的「訂閱電子報」核取方塊欄位</small>
+                </div>
+
+                <div class="example-section">
+                    <h4>如何找到 Entry ID：</h4>
+                    <pre>https://docs.google.com/forms/d/e/[FORM_ID]/viewform?usp=pp_url&<strong style="color: #e74c3c;">entry.1124417422</strong>=測試姓名&<strong style="color: #28a745;">entry.1571446378</strong>=test@email.com&...</pre>
+                    <p>URL 參數中的 <code>entry.XXXXXX</code> 就是各欄位的 Entry ID</p>
+                </div>
+
+                <!-- 按鈕組 -->
+                <div class="button-group">
+                    <button type="button" class="btn-test" onclick="testConfiguration()">🧪 測試連接</button>
+                    <button type="submit" class="btn-primary">💾 儲存設定</button>
+                    <button type="button" class="btn-secondary" onclick="resetToDefault()">🔄 恢復預設</button>
+                </div>
+
+                <!-- 狀態訊息 -->
+                <div id="statusMessage" class="status-message"></div>
+            </form>
+        </div>
+
+        <!-- 說明文件連結 -->
+        <div class="setup-card">
+            <h2>📚 相關文件</h2>
+            <ul style="line-height: 2;">
+                <li><a href="Google表單整合指南.md" target="_blank">📖 Google表單整合指南</a></li>
+                <li><a href="測試並上線指南.md" target="_blank">🧪 測試並上線指南</a></li>
+                <li><a href="問題排查指南.md" target="_blank">🔍 問題排查指南</a></li>
+                <li><a href="records.html" target="_blank">📊 查看已儲存的資料</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="setup.js"></script>
+</body>
+</html>
+

@@ -6,10 +6,15 @@
 
 ```
 AI-auto-sales/
-├── index.html      # 主HTML文件
-├── styles.css      # 樣式表
-├── script.js       # JavaScript交互邏輯
-└── README.md       # 項目說明
+├── index.html                # 主HTML文件（銷售頁面）
+├── setup.html                # 系統設定頁面
+├── records.html              # 客戶資料查看頁面
+├── styles.css                # 樣式表
+├── script.js                 # JavaScript交互邏輯
+├── setup.js                  # 配置管理系統
+├── 配置系統使用指南.md        # 配置系統完整說明
+├── Google表單整合指南.md     # Google表單整合教學
+└── README.md                 # 項目說明
 ```
 
 ## ✨ 主要功能
@@ -40,7 +45,15 @@ AI-auto-sales/
 - 🔒 **表單驗證**: 即時驗證用戶輸入
 - ⌨️ **鍵盤支持**: ESC鍵關閉模態框
 
-### 3. 視覺設計
+### 3. 資料管理系統 ⭐ 新功能
+- 🔧 **視覺化配置介面**: 無需修改程式碼即可設定 Google 表單整合
+- 💾 **本地資料備份**: 所有提交資料自動備份到瀏覽器本地儲存
+- 📊 **資料查看與匯出**: 查看已收集的客戶資料並匯出為 Excel
+- 🧪 **連接測試功能**: 一鍵測試 Google 表單連接是否正常
+- ⚙️ **動態配置切換**: 支援隨時更新或恢復預設設定
+- 🔄 **即時同步**: 配置變更立即生效，無需重啟
+
+### 4. 視覺設計
 - 現代漸變背景
 - 柔和的陰影效果
 - 懸停過渡動畫
@@ -49,11 +62,21 @@ AI-auto-sales/
 
 ## 🚀 使用方法
 
-### 直接打開
+### 快速開始
+
+#### 1. 直接打開使用
 1. 下載所有文件到同一目錄
 2. 雙擊 `index.html` 在瀏覽器中打開
+3. 系統將使用預設的 Google 表單配置
 
-### 本地服務器（推薦）
+#### 2. 設定自己的 Google 表單（推薦）⭐
+1. 打開瀏覽器，開啟 `setup.html`
+2. 按照頁面指示設定您的 Google 表單資訊
+3. 點擊「測試連接」確認設定正確
+4. 儲存設定後返回主頁面
+5. 詳細步驟請參閱 [配置系統使用指南.md](配置系統使用指南.md)
+
+### 本地服務器運行（推薦用於開發）
 使用任何HTTP服務器運行：
 
 ```bash
@@ -67,7 +90,10 @@ npx http-server
 php -S localhost:8000
 ```
 
-然後在瀏覽器訪問 `http://localhost:8000`
+然後在瀏覽器訪問：
+- 主頁面: `http://localhost:8000/index.html`
+- 設定頁面: `http://localhost:8000/setup.html`
+- 資料查看: `http://localhost:8000/records.html`
 
 ## 🎨 自定義指南
 
@@ -103,34 +129,53 @@ const endTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 5
 ### 修改定價
 在 `index.html` 中搜索 "NT$" 並替換為你的價格。
 
+### 設定 Google 表單整合 ⭐
+
+系統提供視覺化配置介面，無需修改程式碼：
+
+#### 方式 1：使用配置介面（推薦）
+1. 打開 `setup.html`
+2. 建立您的 Google 表單並取得預填連結
+3. 在配置頁面填入 Form ID 和各欄位的 Entry ID
+4. 點擊「測試連接」驗證設定
+5. 儲存設定
+
+#### 方式 2：直接修改程式碼
+編輯 `script.js` 中的 `DEFAULT_GOOGLE_FORM_CONFIG`：
+
+```javascript
+const DEFAULT_GOOGLE_FORM_CONFIG = {
+    enabled: true,
+    formId: '您的表單ID',
+    fields: {
+        fullName: 'entry.XXXXXX',
+        email: 'entry.XXXXXX',
+        phone: 'entry.XXXXXX',
+        country: 'entry.XXXXXX',
+        industry: 'entry.XXXXXX',
+        newsletter: 'entry.XXXXXX'
+    }
+};
+```
+
+**詳細教學**：
+- [配置系統使用指南.md](配置系統使用指南.md) - 完整配置步驟
+- [Google表單整合指南.md](Google表單整合指南.md) - Google 表單設定教學
+
 ### 處理訂單表單數據
 
-表單數據收集包含以下字段：
+表單數據會自動：
+1. **提交到 Google 表單**（如已啟用）
+2. **備份到瀏覽器本地儲存**
+3. **可在 records.html 查看與匯出**
+
+收集的欄位包含：
 - **姓名**: 客戶全名
 - **電子郵件**: 用於發送確認和通知
 - **電話**: 聯繫電話
 - **國家/地區**: 用於確定定價和配送
 - **行業**: 了解客戶背景，提供定制服務
-- **付款方式**: 信用卡/PayPal/銀行轉帳
-
-在 `script.js` 的 `initOrderForm()` 函數中處理表單提交：
-
-```javascript
-// 實際整合示例
-fetch('/api/orders', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
-})
-.then(response => response.json())
-.then(result => {
-    // 跳轉到感謝頁面或支付頁面
-    window.location.href = '/thank-you';
-})
-.catch(error => {
-    alert('提交失敗，請稍後再試');
-});
-```
+- **訂閱電子報**: 行銷許可
 
 ## 📱 響應式斷點
 

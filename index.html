@@ -405,6 +405,169 @@
         </div>
     </footer>
 
+    <!-- 订单表单模态框 -->
+    <div id="orderModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="modal-header">
+                <h2>🎉 立即獲取優惠</h2>
+                <p class="modal-subtitle">填寫資料，開始您的AI自動引客之旅</p>
+            </div>
+            
+            <div class="order-form-wrapper">
+                <!-- 左侧：订单摘要 -->
+                <div class="order-summary-sidebar">
+                    <h3>訂單摘要</h3>
+                    <div class="product-info">
+                        <h4>AI自動引客系統+課程</h4>
+                        <p>直接給你範本 + 搭好系統</p>
+                    </div>
+                    
+                    <div class="price-info">
+                        <div class="price-row">
+                            <span>原價</span>
+                            <span class="old-price-text">NT$6,927</span>
+                        </div>
+                        <div class="price-row discount-row">
+                            <span>限時優惠 (-75%)</span>
+                            <span class="discount-text">-NT$5,200</span>
+                        </div>
+                        <hr>
+                        <div class="price-row total-row">
+                            <span>今日特價</span>
+                            <span class="new-price-text">NT$1,727</span>
+                        </div>
+                    </div>
+                    
+                    <div class="included-items">
+                        <h4>✓ 內容包含：</h4>
+                        <ul>
+                            <li>MIGRITY學習會員專區</li>
+                            <li>26堂實戰教學課程</li>
+                            <li>12大行業內容爆款範本</li>
+                            <li>自動轉化系統：自動預約 & 報名</li>
+                            <li>Live課：4小時《一人公司賺錢機器》</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="guarantee-badge">
+                        <span class="badge-icon">✅</span>
+                        <span>7天學不會退包</span>
+                    </div>
+                </div>
+                
+                <!-- 右侧：表单 -->
+                <div class="order-form-main">
+                    <form id="orderForm" class="order-form">
+                        <div class="form-section">
+                            <h3>📋 您的資料</h3>
+                            
+                            <div class="form-group">
+                                <label for="fullName">姓名 <span class="required">*</span></label>
+                                <input type="text" id="fullName" name="fullName" required placeholder="請輸入您的全名">
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="email">電子郵件 <span class="required">*</span></label>
+                                    <input type="email" id="email" name="email" required placeholder="your@email.com">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="phone">電話號碼 <span class="required">*</span></label>
+                                    <input type="tel" id="phone" name="phone" required placeholder="+886 912345678">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="country">國家/地區 <span class="required">*</span></label>
+                                <select id="country" name="country" required>
+                                    <option value="">請選擇...</option>
+                                    <option value="TW" selected>台灣 Taiwan</option>
+                                    <option value="HK">香港 Hong Kong</option>
+                                    <option value="SG">新加坡 Singapore</option>
+                                    <option value="MY">馬來西亞 Malaysia</option>
+                                    <option value="CN">中國 China</option>
+                                    <option value="US">美國 United States</option>
+                                    <option value="other">其他 Other</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="industry">您的行業 <span class="required">*</span></label>
+                                <select id="industry" name="industry" required>
+                                    <option value="">請選擇...</option>
+                                    <option value="spiritual">身心靈導師 / 玄學</option>
+                                    <option value="beauty">美容 / 美髮</option>
+                                    <option value="education">教育 / 培訓</option>
+                                    <option value="insurance">保險 / 金融</option>
+                                    <option value="realestate">房地產</option>
+                                    <option value="consultant">諮詢顧問</option>
+                                    <option value="freelancer">自由工作者</option>
+                                    <option value="coach">個人教練</option>
+                                    <option value="ecommerce">電商 / 微商</option>
+                                    <option value="other">其他</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-section">
+                            <h3>💳 付款方式</h3>
+                            
+                            <div class="payment-methods">
+                                <label class="payment-option">
+                                    <input type="radio" name="payment" value="credit" checked>
+                                    <span class="payment-label">
+                                        <span class="payment-icon">💳</span>
+                                        信用卡 / 金融卡
+                                    </span>
+                                </label>
+                                
+                                <label class="payment-option">
+                                    <input type="radio" name="payment" value="paypal">
+                                    <span class="payment-label">
+                                        <span class="payment-icon">🅿️</span>
+                                        PayPal
+                                    </span>
+                                </label>
+                                
+                                <label class="payment-option">
+                                    <input type="radio" name="payment" value="transfer">
+                                    <span class="payment-label">
+                                        <span class="payment-icon">🏦</span>
+                                        銀行轉帳
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-section">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="terms" required>
+                                <span>我同意 <a href="#" target="_blank">服務條款</a> 和 <a href="#" target="_blank">隱私政策</a></span>
+                            </label>
+                            
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="newsletter">
+                                <span>訂閱最新優惠和行銷資訊</span>
+                            </label>
+                        </div>
+                        
+                        <button type="submit" class="submit-order-btn">
+                            <span>確認訂購 NT$1,727</span>
+                            <span class="btn-icon">→</span>
+                        </button>
+                        
+                        <div class="secure-notice">
+                            <span>🔒</span>
+                            <span>安全加密付款 | 7天無條件退款保證</span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>

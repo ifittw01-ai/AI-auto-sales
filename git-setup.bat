@@ -16,7 +16,7 @@ echo ✓ 文件已添加
 
 echo.
 echo [2/5] 创建初始提交...
-git commit -m "Initial commit: AI自動引客系統銷售頁面"
+git commit -m "Initial commit: AI自動引客系統銷售頁面 - 包含訂單表單模態框"
 if errorlevel 1 (
     echo 错误: 提交失败
     pause

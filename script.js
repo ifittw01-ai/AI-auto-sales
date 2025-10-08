@@ -66,20 +66,96 @@ function initFAQ() {
     });
 }
 
-// CTA按钮点击处理
+// CTA按钮点击处理 - 打开模态框
 function initCTAButtons() {
     const ctaButtons = document.querySelectorAll('.cta-button');
+    const modal = document.getElementById('orderModal');
     
     ctaButtons.forEach(button => {
         button.addEventListener('click', () => {
-            // 这里可以添加实际的订单处理逻辑
-            // 例如：跳转到支付页面、显示表单等
-            alert('感謝您的興趣！這是演示版本。\n實際網站會跳轉到支付或報名表單頁面。');
-            
-            // 实际使用时可以替换为：
-            // window.location.href = '/checkout';
-            // 或显示模态框等
+            openModal();
         });
+    });
+}
+
+// 打开模态框
+function openModal() {
+    const modal = document.getElementById('orderModal');
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden'; // 防止背景滚动
+}
+
+// 关闭模态框
+function closeModal() {
+    const modal = document.getElementById('orderModal');
+    modal.classList.remove('show');
+    document.body.style.overflow = 'auto'; // 恢复滚动
+}
+
+// 初始化模态框事件
+function initModal() {
+    const modal = document.getElementById('orderModal');
+    const closeBtn = document.querySelector('.close-modal');
+    
+    // 点击关闭按钮
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeModal);
+    }
+    
+    // 点击模态框外部关闭
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+    
+    // ESC键关闭
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('show')) {
+            closeModal();
+        }
+    });
+}
+
+// 处理订单表单提交
+function initOrderForm() {
+    const form = document.getElementById('orderForm');
+    
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        // 获取表单数据
+        const formData = new FormData(form);
+        const data = {
+            fullName: formData.get('fullName'),
+            email: formData.get('email'),
+            phone: formData.get('phone'),
+            country: formData.get('country'),
+            industry: formData.get('industry'),
+            payment: formData.get('payment'),
+            terms: formData.get('terms'),
+            newsletter: formData.get('newsletter')
+        };
+        
+        console.log('訂單數據:', data);
+        
+        // 这里可以发送到后端API
+        // 示例：
+        // fetch('/api/orders', {
+        //     method: 'POST',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify(data)
+        // })
+        // .then(response => response.json())
+        // .then(result => {
+        //     window.location.href = '/thank-you';
+        // });
+        
+        // 演示版本：显示成功消息
+        alert(`✅ 訂單已收到！\n\n感謝 ${data.fullName} 的訂購！\n我們已將確認郵件發送到 ${data.email}\n\n這是演示版本，實際網站會跳轉到支付頁面。`);
+        
+        closeModal();
+        form.reset();
     });
 }
 
@@ -149,6 +225,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initCountdown();
     initFAQ();
     initCTAButtons();
+    initModal();
+    initOrderForm();
     initSmoothScroll();
     initScrollAnimations();
     initVideoTracking();

@@ -31,10 +31,14 @@ AI-auto-sales/
 ### 2. 交互功能
 - ⏰ **倒計時器**: 實時倒計時到當天晚上11:59pm
 - 🎯 **FAQ折疊**: 點擊問題展開/收起答案
-- 🔘 **CTA按鈕**: 所有按鈕帶點擊處理
+- 🔘 **CTA按鈕**: 所有按鈕點擊打開訂單表單
+- 📝 **訂單表單模態框**: 專業的彈出式表單收集客戶資料
+- 💳 **多種付款方式**: 信用卡、PayPal、銀行轉帳選項
 - 📱 **響應式設計**: 完美適配移動端和桌面端
 - ✨ **滾動動畫**: 元素進入視窗時的淡入效果
 - 💫 **脈衝動畫**: CTA按鈕的吸引注意力動畫
+- 🔒 **表單驗證**: 即時驗證用戶輸入
+- ⌨️ **鍵盤支持**: ESC鍵關閉模態框
 
 ### 3. 視覺設計
 - 現代漸變背景
@@ -99,16 +103,32 @@ const endTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 5
 ### 修改定價
 在 `index.html` 中搜索 "NT$" 並替換為你的價格。
 
-### 連接支付系統
-在 `script.js` 的 `initCTAButtons()` 函數中添加實際的支付邏輯：
+### 處理訂單表單數據
+
+表單數據收集包含以下字段：
+- **姓名**: 客戶全名
+- **電子郵件**: 用於發送確認和通知
+- **電話**: 聯繫電話
+- **國家/地區**: 用於確定定價和配送
+- **行業**: 了解客戶背景，提供定制服務
+- **付款方式**: 信用卡/PayPal/銀行轉帳
+
+在 `script.js` 的 `initOrderForm()` 函數中處理表單提交：
 
 ```javascript
-button.addEventListener('click', () => {
-    // 跳轉到支付頁面
-    window.location.href = '/checkout';
-    
-    // 或顯示支付表單
-    showPaymentModal();
+// 實際整合示例
+fetch('/api/orders', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+})
+.then(response => response.json())
+.then(result => {
+    // 跳轉到感謝頁面或支付頁面
+    window.location.href = '/thank-you';
+})
+.catch(error => {
+    alert('提交失敗，請稍後再試');
 });
 ```
 

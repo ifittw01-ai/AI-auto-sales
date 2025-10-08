@@ -511,7 +511,8 @@
                             </div>
                         </div>
                         
-                        <div class="form-section">
+                        <!-- 付款部分（可選） -->
+                        <div id="paymentSection" class="form-section payment-section" style="display: none;">
                             <h3>💳 付款方式</h3>
                             
                             <div class="payment-methods">
@@ -543,7 +544,7 @@
                         
                         <div class="form-section">
                             <label class="checkbox-label">
-                                <input type="checkbox" name="terms" required>
+                                <input type="checkbox" id="termsCheckbox" name="terms" required>
                                 <span>我同意 <a href="#" target="_blank">服務條款</a> 和 <a href="#" target="_blank">隱私政策</a></span>
                             </label>
                             
@@ -553,10 +554,17 @@
                             </label>
                         </div>
                         
-                        <button type="submit" class="submit-order-btn">
-                            <span>確認訂購 NT$1,727</span>
-                            <span class="btn-icon">→</span>
-                        </button>
+                        <!-- 雙按鈕選項 -->
+                        <div class="form-buttons">
+                            <button type="button" id="leaveInfoBtn" class="submit-info-btn">
+                                <span>📝 留下資料，稍後決定</span>
+                            </button>
+                            
+                            <button type="button" id="buyNowBtn" class="submit-order-btn">
+                                <span>✅ 立即購買 NT$1,727</span>
+                                <span class="btn-icon">→</span>
+                            </button>
+                        </div>
                         
                         <div class="secure-notice">
                             <span>🔒</span>

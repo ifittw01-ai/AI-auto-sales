@@ -120,13 +120,75 @@ function initModal() {
 // 处理订单表单提交
 function initOrderForm() {
     const form = document.getElementById('orderForm');
+    const leaveInfoBtn = document.getElementById('leaveInfoBtn');
+    const buyNowBtn = document.getElementById('buyNowBtn');
+    const paymentSection = document.getElementById('paymentSection');
+    const termsCheckbox = document.getElementById('termsCheckbox');
     
-    form.addEventListener('submit', (e) => {
+    // 留下資料按鈕
+    leaveInfoBtn.addEventListener('click', (e) => {
         e.preventDefault();
         
-        // 获取表单数据
+        // 驗證基本資料是否填寫完整
+        if (!form.checkValidity()) {
+            // 移除付款部分的必填要求
+            const paymentInputs = paymentSection.querySelectorAll('input');
+            paymentInputs.forEach(input => {
+                input.removeAttribute('required');
+            });
+            form.reportValidity();
+            return;
+        }
+        
+        // 獲取基本資料
         const formData = new FormData(form);
         const data = {
+            type: 'lead', // 標記為留資
+            fullName: formData.get('fullName'),
+            email: formData.get('email'),
+            phone: formData.get('phone'),
+            country: formData.get('country'),
+            industry: formData.get('industry'),
+            newsletter: formData.get('newsletter')
+        };
+        
+        console.log('留資數據:', data);
+        
+        // 這裡可以發送到後端API
+        // fetch('/api/leads', {
+        //     method: 'POST',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify(data)
+        // })
+        // .then(response => response.json())
+        // .then(result => {
+        //     window.location.href = '/thank-you-lead';
+        // });
+        
+        // 演示版本：顯示成功消息
+        alert(`✅ 資料已收到！\n\n感謝 ${data.fullName}！\n我們已將詳細資訊發送到 ${data.email}\n我們的客服會盡快與您聯繫。\n\n這是演示版本，實際網站會跳轉到感謝頁面。`);
+        
+        closeModal();
+        form.reset();
+    });
+    
+    // 立即購買按鈕
+    buyNowBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        
+        // 顯示付款部分
+        paymentSection.style.display = 'block';
+        
+        // 驗證所有資料是否填寫完整
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
+        
+        // 獲取完整訂單數據
+        const formData = new FormData(form);
+        const data = {
+            type: 'order', // 標記為訂單
             fullName: formData.get('fullName'),
             email: formData.get('email'),
             phone: formData.get('phone'),
@@ -139,8 +201,7 @@ function initOrderForm() {
         
         console.log('訂單數據:', data);
         
-        // 这里可以发送到后端API
-        // 示例：
+        // 這裡可以發送到後端API並跳轉到支付頁面
         // fetch('/api/orders', {
         //     method: 'POST',
         //     headers: { 'Content-Type': 'application/json' },
@@ -148,14 +209,15 @@ function initOrderForm() {
         // })
         // .then(response => response.json())
         // .then(result => {
-        //     window.location.href = '/thank-you';
+        //     window.location.href = result.paymentUrl;
         // });
         
-        // 演示版本：显示成功消息
+        // 演示版本：顯示成功消息
         alert(`✅ 訂單已收到！\n\n感謝 ${data.fullName} 的訂購！\n我們已將確認郵件發送到 ${data.email}\n\n這是演示版本，實際網站會跳轉到支付頁面。`);
         
         closeModal();
         form.reset();
+        paymentSection.style.display = 'none';
     });
 }
 

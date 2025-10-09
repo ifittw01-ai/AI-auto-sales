@@ -33,6 +33,30 @@ body {
     padding: 0 20px;
 }
 
+/* 顶部主视觉图 */
+.hero-image-section {
+    width: 100%;
+    background: var(--white);
+    padding: 0;
+    margin: 0;
+}
+
+.hero-image-wrapper {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.hero-main-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+}
+
 /* 顶部横幅 */
 .top-banner {
     background: var(--gradient-primary);

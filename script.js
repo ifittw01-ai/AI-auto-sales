@@ -92,7 +92,7 @@ function initCountdown() {
             if (hoursEl) hoursEl.textContent = '00';
             if (minutesEl) minutesEl.textContent = '00';
             if (secondsEl) secondsEl.textContent = '00';
-            if (bannerEl) bannerEl.textContent = '00:00';
+            if (bannerEl) bannerEl.textContent = '00:00:00';
             return;
         }
 
@@ -114,9 +114,9 @@ function initCountdown() {
         if (minutesEl) minutesEl.textContent = String(minutes).padStart(2, '0');
         if (secondsEl) secondsEl.textContent = String(seconds).padStart(2, '0');
         
-        // 更新横幅倒计时
+        // 更新横幅倒计时（包含秒数）
         if (bannerEl) {
-            bannerEl.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+            bannerEl.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
         }
     }
 

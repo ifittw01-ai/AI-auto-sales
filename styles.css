@@ -133,6 +133,7 @@ body {
 }
 
 .strikethrough {
+    color: #e74c3c;
     text-decoration: line-through;
 }
 
@@ -266,6 +267,42 @@ body {
     text-align: center;
     margin-bottom: 50px;
     color: var(--text-dark);
+}
+
+/* 黄色描边标题效果 */
+.stroke-title {
+    font-size: 3rem;
+    font-weight: 900;
+    color: #000;
+    text-shadow: 
+        -3px -3px 0 #FFD700,
+        3px -3px 0 #FFD700,
+        -3px 3px 0 #FFD700,
+        3px 3px 0 #FFD700,
+        -4px 0 0 #FFD700,
+        4px 0 0 #FFD700,
+        0 -4px 0 #FFD700,
+        0 4px 0 #FFD700,
+        5px 5px 10px rgba(0, 0, 0, 0.8);
+    letter-spacing: 2px;
+}
+
+/* 特殊标题样式 - 白色带描边效果 */
+.special-title {
+    font-size: 3rem;
+    font-weight: 900;
+    color: #ffffff;
+    text-shadow: 
+        -3px -3px 0 #2c3e50,
+        3px -3px 0 #2c3e50,
+        -3px 3px 0 #2c3e50,
+        3px 3px 0 #2c3e50,
+        -3px 0 0 #2c3e50,
+        3px 0 0 #2c3e50,
+        0 -3px 0 #2c3e50,
+        0 3px 0 #2c3e50,
+        0 0 10px rgba(0, 0, 0, 0.3);
+    letter-spacing: 2px;
 }
 
 .audience-grid {

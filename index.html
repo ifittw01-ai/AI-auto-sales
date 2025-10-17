@@ -36,7 +36,7 @@
             
             <div class="offer-box">
                 <ul class="features-list">
-                    <li>✅ 提供 AI 內容產生系統+ 自動發布系統+ 互動系統</li>
+                    <li>✅ 提供 AI自媒體自動 獲客+生成+自動發佈+互動系統</li>
                     <li>✅ 所有產業專用自動化引客系統(報名，預約工具與範本)</li>
                     <li>✅ 終生學習+實體+影音課帶你 Step-by-Step 學習AI引客</li>
                     <li>✅ 贈送 《AI賺錢機器引客網站軟體》</li>
@@ -79,8 +79,11 @@
         <div class="container">
             <p class="video-instruction">🔊 確保你打開聲音，等待影片載入...</p>
             <div class="video-wrapper">
-                <video controls poster="placeholder-video.jpg">
-                    <source src="demo-video.mp4" type="video/mp4">
+                <div class="video-overlay" id="videoOverlay">
+                    <span class="video-overlay-text">影片展示</span>
+                </div>
+                <video id="mainVideo" controls poster="">
+                    <source src="data/IG6.mp4" type="video/mp4">
                     您的瀏覽器不支援影片播放
                 </video>
             </div>
@@ -117,6 +120,10 @@
         <div class="container">
             <div class="comparison-wrapper">
                 <div class="before-box">
+                    <!-- 痛点图片 -->
+                    <div class="comparison-image-wrapper">
+                        <img src="data/cannot get customer.png" alt="無法獲客的困擾" class="comparison-image">
+                    </div>
                     <h2>之前</h2>
                     <ul>
                         <li>❌ 有時靠轉介紹，導致收入不穩定</li>
@@ -132,6 +139,10 @@
                 </div>
                 
                 <div class="after-box">
+                    <!-- 成功获客图片 -->
+                    <div class="comparison-image-wrapper">
+                        <img src="data/get customer.png" alt="成功獲客" class="comparison-image">
+                    </div>
                     <h2>之後</h2>
                     <ul>
                         <li>✅ 為自己創造客製化AI智能體打造引客SOP</li>
@@ -184,20 +195,24 @@
         <div class="container">
             <div class="cases-grid">
                 <div class="case-card">
+                    <img src="data/1.png" alt="諮詢師案例" style="width: 100%; border-radius: 8px; margin-bottom: 15px;">
                     <h3>諮詢師</h3>
                     <p>發了2篇內容就有人預約諮詢課程</p>
                 </div>
                 <div class="case-card">
+                    <img src="data/2.png" alt="保險&招商案例" style="width: 100%; border-radius: 8px; margin-bottom: 15px;">
                     <h3>保險&招商</h3>
                     <p>說明會前一天滿席，不再靠廣告</p>
                 </div>
                 <div class="case-card">
+                    <img src="data/3.png" alt="自由工作者案例" style="width: 100%; border-radius: 8px; margin-bottom: 15px;">
                     <h3>自由工作者</h3>
                     <p>剛睡醒，手機跳出客戶詢問：有人要服務</p>
                 </div>
                 <div class="case-card">
+                    <img src="data/4.png" alt="教育顧問案例" style="width: 100%; border-radius: 8px; margin-bottom: 15px;">
                     <h3>教育顧問</h3>
-                    <p>一場直播後，十幾個人自動報名體驗課</p>
+                    <p>使用一周後，十幾個家長帶孩子來上體驗課</p>
                 </div>
             </div>
         </div>
@@ -212,7 +227,7 @@
                 <p class="current-price">✅ 現在只需 <span class="highlight">NT$300元</span>！</p>
             </div>
             <button class="cta-button pulse">搶先報名,準時出席無需付費</button>
-            <p class="package-info">AI自媒體自動生成系統+AI自動發佈系統+互動系統</p>
+            <p class="package-info">AI自媒體自動 獲客+生成+自動發佈+互動系統</p>
         </div>
     </section>
 
@@ -280,7 +295,7 @@
                 <p class="current-price">✅ 現在只需 <span class="highlight">NT$300元</span>！</p>
             </div>
             <button class="cta-button pulse">搶先報名,準時出席無需付費</button>
-            <p class="package-info">AI自媒體自動生成系統+AI自動發佈系統+互動系統</p>
+            <p class="package-info">AI自媒體自動 獲客+生成+自動發佈+互動系統</p>
         </div>
     </section>
 
@@ -387,7 +402,7 @@
                         <span class="faq-icon">+</span>
                     </div>
                     <div class="faq-answer">
-                        <p>統支援 iOS、Android，以及 Apple 電腦等多種裝置和主流瀏覽器。</p>
+                        <p>系統支援 iOS、Android，以及 Apple 電腦等多種裝置和主流瀏覽器。</p>
                     </div>
                 </div>
 
@@ -397,7 +412,7 @@
                         <span class="faq-icon">+</span>
                     </div>
                     <div class="faq-answer">
-                        <p>我們提供完整的回覆範本，可直接使用。如有特殊需求，也能自行新增或調整回覆內容。</p>
+                        <p>我們提供與AI連動設定簡單又快速，您也可以自行設定回覆內容。</p>
                     </div>
                 </div>
 
@@ -417,18 +432,7 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <div class="footer-content">
-                <h4>MIGRITY SDN BHD (1415924-D)</h4>
-                <p>No. 13-3, Jalan PJU 5/3, Dataran Sunway, Kota Damansara,<br>
-                47810 Petaling Jaya, Selangor, Malaysia.</p>
-                <p>Email: <a href="mailto:[email protected]">[email protected]</a></p>
-            </div>
-            <div class="footer-links">
-                <a href="#">Privacy Policy</a> | 
-                <a href="#">Terms & Conditions</a> | 
-                <a href="setup.html">⚙️ 系統設定</a>
-            </div>
-            <p class="copyright">Copyright © 2025. All Rights Reserved.</p>
+            <p class="copyright" style="margin: 0;">© 2025. All Rights Reserved.</p>
         </div>
     </footer>
 
@@ -443,7 +447,7 @@
             
             <div class="order-form-wrapper">
                 <!-- 左侧：订单摘要 -->
-                <div class="order-summary-sidebar">
+                <!--<div class="order-summary-sidebar">
                     <h3>訂單摘要</h3>
                     <div class="product-info">
                         <h4>AI自動引客系統+課程</h4>
@@ -481,7 +485,7 @@
                         <span class="badge-icon">✅</span>
                         <span>7天學不會退包</span>
                     </div>
-                </div>
+                </div>-->
                 
                 <!-- 右侧：表单 -->
                 <div class="order-form-main">
@@ -511,12 +515,14 @@
                                 <select id="country" name="country" required>
                                     <option value="">請選擇...</option>
                                     <option value="TW" selected>台灣 Taiwan</option>
+                                    <!--
                                     <option value="HK">香港 Hong Kong</option>
                                     <option value="SG">新加坡 Singapore</option>
                                     <option value="MY">馬來西亞 Malaysia</option>
                                     <option value="CN">中國 China</option>
                                     <option value="US">美國 United States</option>
                                     <option value="other">其他 Other</option>
+                                    -->
                                 </select>
                             </div>
                             
@@ -536,8 +542,18 @@
                                     <option value="other">其他</option>
                                 </select>
                             </div>
+                            
+                            <div class="form-group">
+                                <label for="region">希望評估地區 <span class="required">*</span></label>
+                                <select id="region" name="region" required>
+                                    <option value="">請選擇...</option>
+                                    <option value="north">北部</option>
+                                    <option value="central">中部</option>
+                                    <option value="south">南部</option>
+                                </select>
+                            </div>
                         </div>
-                        
+                        <!--
                         <div class="form-section">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="termsCheckbox" name="terms" required>
@@ -548,7 +564,7 @@
                                 <input type="checkbox" name="newsletter">
                                 <span>訂閱最新優惠和行銷資訊</span>
                             </label>
-                        </div>
+                        </div> -->
                         
                         <!-- 提交按鈕 -->
                         <div class="form-buttons">
@@ -559,12 +575,12 @@
                         
                         <div class="secure-notice">
                             <span>🔒</span>
-                            <span>您的資料將安全儲存在本設備 | 隨時可以查看或匯出</span>
+                            <span>您的資料將安全受到保護</span>
                         </div>
-                        
+                        <!--
                         <div class="view-data-link">
                             <a href="records.html" target="_blank">📊 查看已儲存的資料</a>
-                        </div>
+                        </div> -->
                     </form>
                 </div>
             </div>

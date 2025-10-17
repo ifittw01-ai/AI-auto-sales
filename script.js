@@ -383,18 +383,35 @@ function initScrollAnimations() {
     });
 }
 
-// 添加视频播放追踪（可选）
+// 添加视频播放追踪和覆盖层控制
 function initVideoTracking() {
-    const video = document.querySelector('video');
-    if (video) {
+    const video = document.getElementById('mainVideo');
+    const overlay = document.getElementById('videoOverlay');
+    
+    if (video && overlay) {
+        // 視頻開始播放時隱藏覆蓋層
         video.addEventListener('play', () => {
             console.log('Video started playing');
+            overlay.classList.add('hidden');
             // 这里可以添加分析追踪代码
         });
 
+        // 視頻暫停時顯示覆蓋層
+        video.addEventListener('pause', () => {
+            console.log('Video paused');
+            overlay.classList.remove('hidden');
+        });
+
+        // 視頻結束時顯示覆蓋層
         video.addEventListener('ended', () => {
             console.log('Video finished');
+            overlay.classList.remove('hidden');
             // 视频结束后可以显示特别优惠等
+        });
+
+        // 當視頻從頭開始時確保覆蓋層可見
+        video.addEventListener('loadeddata', () => {
+            overlay.classList.remove('hidden');
         });
     }
 }

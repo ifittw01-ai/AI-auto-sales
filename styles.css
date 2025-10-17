@@ -248,11 +248,68 @@ body {
     border-radius: 20px;
     overflow: hidden;
     box-shadow: var(--shadow);
+    position: relative;
 }
 
 .video-wrapper video {
     width: 100%;
     display: block;
+}
+
+/* 视频覆盖层 */
+.video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.video-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.video-overlay-text {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--white);
+    text-shadow: 
+        -2px -2px 0 #667eea,
+        2px -2px 0 #667eea,
+        -2px 2px 0 #667eea,
+        2px 2px 0 #667eea,
+        0 0 20px rgba(102, 126, 234, 0.8);
+    letter-spacing: 3px;
+    animation: textPulse 2s ease-in-out infinite;
+}
+
+@keyframes textPulse {
+    0%, 100% {
+        transform: scale(1);
+        text-shadow: 
+            -2px -2px 0 #667eea,
+            2px -2px 0 #667eea,
+            -2px 2px 0 #667eea,
+            2px 2px 0 #667eea,
+            0 0 20px rgba(102, 126, 234, 0.8);
+    }
+    50% {
+        transform: scale(1.05);
+        text-shadow: 
+            -2px -2px 0 #764ba2,
+            2px -2px 0 #764ba2,
+            -2px 2px 0 #764ba2,
+            2px 2px 0 #764ba2,
+            0 0 30px rgba(118, 75, 162, 1);
+    }
 }
 
 /* 目标受众 */
@@ -355,6 +412,27 @@ body {
     padding: 40px;
     border-radius: 15px;
     box-shadow: var(--shadow);
+}
+
+/* 对比区域内的图片样式 */
+.comparison-image-wrapper {
+    margin-bottom: 25px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.comparison-image-wrapper:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+.comparison-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
 }
 
 .before-box h2 {
@@ -930,8 +1008,8 @@ body {
 
 /* 表单包装器 */
 .order-form-wrapper {
-    display: grid;
-    grid-template-columns: 350px 1fr;
+    display: flex;
+    justify-content: center;
     gap: 0;
 }
 
@@ -1061,6 +1139,8 @@ body {
 /* 右侧表单 */
 .order-form-main {
     padding: 40px;
+    max-width: 700px;
+    width: 100%;
 }
 
 .order-form {
@@ -1337,6 +1417,17 @@ body {
         margin: 20px auto;
     }
 
+    /* 对比区域图片移动端样式 */
+    .comparison-image-wrapper {
+        margin-bottom: 20px;
+        border-radius: 10px;
+    }
+
+    .before-box,
+    .after-box {
+        padding: 25px;
+    }
+
     .section-title {
         font-size: 1.8rem;
     }
@@ -1406,6 +1497,12 @@ body {
 
     .form-buttons {
         gap: 12px;
+    }
+
+    /* 视频覆盖层移动端样式 */
+    .video-overlay-text {
+        font-size: 2rem;
+        letter-spacing: 2px;
     }
 }
 

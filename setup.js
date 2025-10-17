@@ -14,7 +14,9 @@ const DEFAULT_CONFIG = {
         phone: 'entry.51167075',
         country: 'entry.251150813',
         industry: 'entry.828038711',
-        newsletter: 'entry.1980319875'
+        newsletter: 'entry.1980319875',
+        region: 'entry.1586436660',
+        lineId: 'entry.1922861190'
     }
 };
 
@@ -48,6 +50,14 @@ function loadConfiguration() {
         document.getElementById('fieldIndustry').value = config.fields.industry;
         document.getElementById('fieldNewsletter').value = config.fields.newsletter;
         
+        // 新增字段（選填）
+        if (config.fields.region) {
+            document.getElementById('fieldRegion').value = config.fields.region;
+        }
+        if (config.fields.lineId) {
+            document.getElementById('fieldLineId').value = config.fields.lineId;
+        }
+        
         console.log('✅ 設定已載入');
     } catch (error) {
         console.error('載入設定時發生錯誤:', error);
@@ -75,6 +85,16 @@ document.getElementById('setupForm').addEventListener('submit', (e) => {
                 newsletter: document.getElementById('fieldNewsletter').value.trim()
             }
         };
+        
+        // 添加選填字段
+        const regionValue = document.getElementById('fieldRegion').value.trim();
+        const lineIdValue = document.getElementById('fieldLineId').value.trim();
+        if (regionValue) {
+            config.fields.region = regionValue;
+        }
+        if (lineIdValue) {
+            config.fields.lineId = lineIdValue;
+        }
         
         // 驗證資料
         if (!validateConfiguration(config)) {
@@ -145,7 +165,9 @@ async function testConfiguration() {
             phone: document.getElementById('fieldPhone').value.trim(),
             country: document.getElementById('fieldCountry').value.trim(),
             industry: document.getElementById('fieldIndustry').value.trim(),
-            newsletter: document.getElementById('fieldNewsletter').value.trim()
+            newsletter: document.getElementById('fieldNewsletter').value.trim(),
+            region: document.getElementById('fieldRegion').value.trim(),
+            lineId: document.getElementById('fieldLineId').value.trim()
         };
         
         // 驗證基本格式
@@ -165,6 +187,14 @@ async function testConfiguration() {
         formData.append(fields.country, '台灣');
         formData.append(fields.industry, '其他');
         formData.append(fields.newsletter, '是');
+        
+        // 添加選填字段測試資料
+        if (fields.region) {
+            formData.append(fields.region, '北部');
+        }
+        if (fields.lineId) {
+            formData.append(fields.lineId, 'test_line_id');
+        }
         
         // 嘗試提交
         const response = await fetch(formUrl, {

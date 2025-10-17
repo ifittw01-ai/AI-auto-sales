@@ -13,6 +13,8 @@ const DEFAULT_GOOGLE_FORM_CONFIG = {
         phone: 'entry.51167075',
         country: 'entry.251150813',
         industry: 'entry.828038711',
+        region: 'entry.1586436660',
+        lineId: 'entry.1922861190',
         newsletter: 'entry.1980319875'
     }
 };
@@ -59,6 +61,13 @@ const INDUSTRY_NAMES = {
     'coach': '個人教練',
     'ecommerce': '電商 / 微商',
     'other': '其他'
+};
+
+// 地區對應表
+const REGION_NAMES = {
+    'north': '北部',
+    'central': '中部',
+    'south': '南部'
 };
 
 // ========================================
@@ -172,6 +181,47 @@ function closeModal() {
     document.body.style.overflow = 'auto'; // 恢复滚动
 }
 
+// 显示成功页面
+function showSuccessPage(userName) {
+    const modalContent = document.querySelector('#orderModal .modal-content');
+    
+    // 保存原始内容
+    const originalContent = modalContent.innerHTML;
+    
+    // 显示成功页面内容
+    modalContent.innerHTML = `
+        <div class="success-page" style="text-align: center; padding: 40px 20px;">
+            <div class="success-icon" style="font-size: 80px; margin-bottom: 20px;">
+                ✅
+            </div>
+            <h2 style="color: #2ecc71; margin-bottom: 10px;">提交成功！</h2>
+            <p style="font-size: 1.1rem; color: #333; margin-bottom: 30px;">
+                感謝 <strong>${userName}</strong>！<br>
+                您的資料已成功送出。
+            </p>
+            
+            <div class="line-qr-section" style="background: linear-gradient(135deg, #06C755 0%, #00B900 100%); padding: 30px; border-radius: 15px; margin: 30px auto; max-width: 400px; box-shadow: 0 4px 15px rgba(6, 199, 85, 0.3);">
+                <h3 style="color: white; margin-bottom: 15px; font-size: 1.3rem;">🎉 下一步</h3>
+                <p style="color: white; margin-bottom: 20px; font-size: 1.05rem; line-height: 1.6;">
+                    掃描 QR Code 加入 LINE<br>
+                    <strong>立即獲得專屬顧問服務！</strong>
+                </p>
+                <div class="qr-code-container" style="background: white; padding: 20px; border-radius: 10px; display: inline-block; margin-bottom: 15px;">
+                    <img src="data/line-qrcode.png.jpg" alt="LINE QR Code" style="width: 200px; height: 200px; display: block;">
+                </div>
+                <p style="color: white; font-size: 0.9rem; opacity: 0.95;">
+                    ⚡⚡⚡⚡⚡加入後即可開始您的 AI 自動引客之旅
+                    (密碼:13579)
+                </p>
+            </div>
+            
+            <button onclick="location.reload()" style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: white; border: none; padding: 15px 40px; font-size: 1.1rem; border-radius: 30px; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);">
+                關閉
+            </button>
+        </div>
+    `;
+}
+
 // 初始化模态框事件
 function initModal() {
     const modal = document.getElementById('orderModal');
@@ -238,22 +288,38 @@ async function submitToGoogleForm(data) {
         // 準備表單資料
         const formData = new FormData();
         
-        // 添加所有欄位資料
-        formData.append(GOOGLE_FORM_CONFIG.fields.fullName, data.fullName);
-        formData.append(GOOGLE_FORM_CONFIG.fields.email, data.email);
-        formData.append(GOOGLE_FORM_CONFIG.fields.phone, data.phone);
-        formData.append(GOOGLE_FORM_CONFIG.fields.country, COUNTRY_NAMES[data.country] || data.country);
-        formData.append(GOOGLE_FORM_CONFIG.fields.industry, INDUSTRY_NAMES[data.industry] || data.industry);
+        // 添加必填欄位資料
+        if (GOOGLE_FORM_CONFIG.fields.fullName && data.fullName) {
+            formData.append(GOOGLE_FORM_CONFIG.fields.fullName, data.fullName);
+        }
+        if (GOOGLE_FORM_CONFIG.fields.email && data.email) {
+            formData.append(GOOGLE_FORM_CONFIG.fields.email, data.email);
+        }
+        if (GOOGLE_FORM_CONFIG.fields.phone && data.phone) {
+            formData.append(GOOGLE_FORM_CONFIG.fields.phone, data.phone);
+        }
+        if (GOOGLE_FORM_CONFIG.fields.country && data.country) {
+            formData.append(GOOGLE_FORM_CONFIG.fields.country, COUNTRY_NAMES[data.country] || data.country);
+        }
+        if (GOOGLE_FORM_CONFIG.fields.industry && data.industry) {
+            formData.append(GOOGLE_FORM_CONFIG.fields.industry, INDUSTRY_NAMES[data.industry] || data.industry);
+        }
         
-        // 訂閱電子報（核取方塊）- 值必須是「是」
-        if (data.newsletter) {
+        // 添加選填字段：地區和 LINE ID
+        if (GOOGLE_FORM_CONFIG.fields.region && data.region) {
+            formData.append(GOOGLE_FORM_CONFIG.fields.region, REGION_NAMES[data.region] || data.region);
+        }
+        if (GOOGLE_FORM_CONFIG.fields.lineId && data.lineId && data.lineId !== '未提供') {
+            formData.append(GOOGLE_FORM_CONFIG.fields.lineId, data.lineId);
+        }
+        
+        // 訂閱電子報（核取方塊）- 只有勾選時才傳送
+        if (GOOGLE_FORM_CONFIG.fields.newsletter && data.newsletter) {
             formData.append(GOOGLE_FORM_CONFIG.fields.newsletter, '是');
         }
         
-        // Google Forms 需要的額外參數
-        formData.append('fvv', '1');
-        formData.append('partialResponse', '[null,null,"0"]');
-        formData.append('pageHistory', '0');
+        console.log('📤 正在提交資料到 Google 表單...');
+        console.log('表單 URL:', formUrl);
         
         // 使用 fetch 提交（no-cors 模式）
         await fetch(formUrl, {
@@ -262,7 +328,8 @@ async function submitToGoogleForm(data) {
             mode: 'no-cors' // Google Forms 需要使用 no-cors
         });
         
-        console.log('✅ 資料已成功提交到 Google 表單');
+        // no-cors 模式無法讀取回應，所以假設成功
+        console.log('✅ 資料已提交到 Google 表單');
         return { success: true };
     } catch (error) {
         console.error('❌ Google 表單提交失敗:', error);
@@ -296,6 +363,8 @@ function initOrderForm() {
             phone: formData.get('phone'),
             country: formData.get('country'),
             industry: formData.get('industry'),
+            region: formData.get('region'),
+            lineId: formData.get('lineId') || '未提供',
             newsletter: formData.get('newsletter') === 'on'
         };
         
@@ -323,13 +392,11 @@ function initOrderForm() {
         // 判斷結果並顯示訊息
         if (GOOGLE_FORM_CONFIG.enabled && googleResult.success) {
             // Google 表單模式成功
-            alert(`✅ 資料已成功提交！\n\n感謝 ${data.fullName}！\n您的資料已傳送完成。\n我們的客服會盡快與您聯繫。`);
-            closeModal();
+            showSuccessPage(data.fullName);
             form.reset();
         } else if (localResult.success) {
             // 本地儲存模式成功
-            alert(`✅ 資料已成功儲存！\n\n感謝 ${data.fullName}！\n您的資料已安全儲存在本設備中。\n\n您可以點擊「查看已儲存的資料」來查看或匯出 Excel 檔案。`);
-            closeModal();
+            showSuccessPage(data.fullName);
             form.reset();
         } else {
             // 失敗

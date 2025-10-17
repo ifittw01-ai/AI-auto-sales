@@ -16,7 +16,8 @@ const DEFAULT_CONFIG = {
         industry: 'entry.828038711',
         newsletter: 'entry.1980319875',
         region: 'entry.1586436660',
-        lineId: 'entry.1922861190'
+        lineId: 'entry.1922861190',
+        whatsapp: 'entry.1017645638'
     }
 };
 
@@ -57,6 +58,9 @@ function loadConfiguration() {
         if (config.fields.lineId) {
             document.getElementById('fieldLineId').value = config.fields.lineId;
         }
+        if (config.fields.whatsapp) {
+            document.getElementById('fieldWhatsApp').value = config.fields.whatsapp;
+        }
         
         console.log('✅ 設定已載入');
     } catch (error) {
@@ -89,11 +93,15 @@ document.getElementById('setupForm').addEventListener('submit', (e) => {
         // 添加選填字段
         const regionValue = document.getElementById('fieldRegion').value.trim();
         const lineIdValue = document.getElementById('fieldLineId').value.trim();
+        const whatsappValue = document.getElementById('fieldWhatsApp').value.trim();
         if (regionValue) {
             config.fields.region = regionValue;
         }
         if (lineIdValue) {
             config.fields.lineId = lineIdValue;
+        }
+        if (whatsappValue) {
+            config.fields.whatsapp = whatsappValue;
         }
         
         // 驗證資料
@@ -167,7 +175,8 @@ async function testConfiguration() {
             industry: document.getElementById('fieldIndustry').value.trim(),
             newsletter: document.getElementById('fieldNewsletter').value.trim(),
             region: document.getElementById('fieldRegion').value.trim(),
-            lineId: document.getElementById('fieldLineId').value.trim()
+            lineId: document.getElementById('fieldLineId').value.trim(),
+            whatsapp: document.getElementById('fieldWhatsApp').value.trim()
         };
         
         // 驗證基本格式
@@ -194,6 +203,9 @@ async function testConfiguration() {
         }
         if (fields.lineId) {
             formData.append(fields.lineId, 'test_line_id');
+        }
+        if (fields.whatsapp) {
+            formData.append(fields.whatsapp, '+886912345678');
         }
         
         // 嘗試提交

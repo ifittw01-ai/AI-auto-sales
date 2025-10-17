@@ -270,6 +270,7 @@
                         <th>行業</th>
                         <th>評估地區</th>
                         <th>LINE ID</th>
+                        <th>WhatsApp</th>
                         <th>訂閱電子報</th>
                         <th>建立時間</th>
                         <th>操作</th>
@@ -332,6 +333,7 @@
                     <td>${getIndustryName(item.industry)}</td>
                     <td>${getRegionName(item.region)}</td>
                     <td>${escapeHtml(item.lineId || '未提供')}</td>
+                    <td>${escapeHtml(item.whatsapp || '未提供')}</td>
                     <td>${item.newsletter ? '是' : '否'}</td>
                     <td>${formatDateTime(item.createdAt)}</td>
                     <td>
@@ -362,6 +364,7 @@
                 '行業': getIndustryName(item.industry),
                 '評估地區': getRegionName(item.region),
                 'LINE ID': item.lineId || '未提供',
+                'WhatsApp': item.whatsapp || '未提供',
                 '訂閱電子報': item.newsletter ? '是' : '否',
                 '建立時間': formatDateTime(item.createdAt)
             }));
@@ -379,6 +382,7 @@
                 { wch: 20 }, // 行業
                 { wch: 12 }, // 評估地區
                 { wch: 18 }, // LINE ID
+                { wch: 18 }, // WhatsApp
                 { wch: 12 }, // 訂閱
                 { wch: 20 }  // 時間
             ];
@@ -485,7 +489,7 @@
 
         function getIndustryName(code) {
             const industries = {
-                'spiritual': '身心靈導師 / 玄學',
+                'spiritual': '身心靈導師',
                 'beauty': '美容 / 美髮',
                 'education': '教育 / 培訓',
                 'insurance': '保險 / 金融',

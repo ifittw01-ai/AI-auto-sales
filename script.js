@@ -15,6 +15,7 @@ const DEFAULT_GOOGLE_FORM_CONFIG = {
         industry: 'entry.828038711',
         region: 'entry.1586436660',
         lineId: 'entry.1922861190',
+        whatsapp: 'entry.1017645638',
         newsletter: 'entry.1980319875'
     }
 };
@@ -51,7 +52,7 @@ const COUNTRY_NAMES = {
 
 // 行業對應表（確保與 Google 表單的選項一致）
 const INDUSTRY_NAMES = {
-    'spiritual': '身心靈導師 / 玄學',
+    'spiritual': '身心靈導師',
     'beauty': '美容 / 美髮',
     'education': '教育 / 培訓',
     'insurance': '保險 / 金融',
@@ -200,18 +201,42 @@ function showSuccessPage(userName) {
                 您的資料已成功送出。
             </p>
             
-            <div class="line-qr-section" style="background: linear-gradient(135deg, #06C755 0%, #00B900 100%); padding: 30px; border-radius: 15px; margin: 30px auto; max-width: 400px; box-shadow: 0 4px 15px rgba(6, 199, 85, 0.3);">
-                <h3 style="color: white; margin-bottom: 15px; font-size: 1.3rem;">🎉 下一步</h3>
-                <p style="color: white; margin-bottom: 20px; font-size: 1.05rem; line-height: 1.6;">
-                    掃描 QR Code 加入 LINE<br>
-                    <strong>立即獲得專屬顧問服務！</strong>
-                </p>
-                <div class="qr-code-container" style="background: white; padding: 20px; border-radius: 10px; display: inline-block; margin-bottom: 15px;">
-                    <img src="data/line-qrcode.png.jpg" alt="LINE QR Code" style="width: 200px; height: 200px; display: block;">
+            <div style="margin: 30px auto; max-width: 500px;">
+                <h3 style="color: #333; margin-bottom: 20px; font-size: 1.3rem; text-align: center;">🎉 立即聯繫我們</h3>
+                
+                <!-- LINE 區塊 -->
+                <div class="contact-section" style="background: linear-gradient(135deg, #06C755 0%, #00B900 100%); padding: 25px; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(6, 199, 85, 0.3);">
+                    <h4 style="color: white; margin-bottom: 15px; font-size: 1.1rem;">
+                        💬 透過 LINE 聯繫
+                    </h4>
+                    <div class="qr-code-container" style="background: white; padding: 20px; border-radius: 10px; display: inline-block; margin-bottom: 10px;">
+                        <img src="data/line-qrcode.png.jpg" alt="LINE QR Code" style="width: 180px; height: 180px; display: block;" onerror="this.style.display='none'; this.parentElement.innerHTML='<p style=color:#666;padding:20px>QR Code 載入中...</p>'">
+                    </div>
+                    <p style="color: white; font-size: 0.9rem; opacity: 0.95; margin-top: 10px;">
+                        掃描 QR Code 加入 LINE<br>
+                        (密碼:13579)
+                    </p>
                 </div>
-                <p style="color: white; font-size: 0.9rem; opacity: 0.95;">
-                    ⚡⚡⚡⚡⚡加入後即可開始您的 AI 自動引客之旅
-                    (密碼:13579)
+                
+                <!-- WhatsApp 區塊 -->
+                <div class="contact-section" style="background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);">
+                    <h4 style="color: white; margin-bottom: 15px; font-size: 1.1rem;">
+                        📱 透過 WhatsApp 聯繫
+                    </h4>
+                    <a href="https://wa.me/886905223778?text=${encodeURIComponent('您好，我是 ' + userName + '，已填寫表單，想了解AI自動引客系統')}" 
+                       target="_blank"
+                       style="display: inline-block; background: white; color: #128C7E; padding: 15px 40px; border-radius: 30px; text-decoration: none; font-weight: bold; font-size: 1.1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: transform 0.2s;"
+                       onmouseover="this.style.transform='scale(1.05)'"
+                       onmouseout="this.style.transform='scale(1)'">
+                        🟢 立即開啟 WhatsApp
+                    </a>
+                    <p style="color: white; font-size: 0.85rem; opacity: 0.9; margin-top: 15px;">
+                        點擊按鈕將自動開啟 WhatsApp 對話
+                    </p>
+                </div>
+                
+                <p style="color: #666; font-size: 0.9rem; text-align: center; margin-top: 20px;">
+                    ⚡ 選擇您方便的聯繫方式，我們將立即為您服務
                 </p>
             </div>
             
@@ -305,12 +330,15 @@ async function submitToGoogleForm(data) {
             formData.append(GOOGLE_FORM_CONFIG.fields.industry, INDUSTRY_NAMES[data.industry] || data.industry);
         }
         
-        // 添加選填字段：地區和 LINE ID
+        // 添加選填字段：地區、LINE ID 和 WhatsApp
         if (GOOGLE_FORM_CONFIG.fields.region && data.region) {
             formData.append(GOOGLE_FORM_CONFIG.fields.region, REGION_NAMES[data.region] || data.region);
         }
         if (GOOGLE_FORM_CONFIG.fields.lineId && data.lineId && data.lineId !== '未提供') {
             formData.append(GOOGLE_FORM_CONFIG.fields.lineId, data.lineId);
+        }
+        if (GOOGLE_FORM_CONFIG.fields.whatsapp && data.whatsapp && data.whatsapp !== '未提供') {
+            formData.append(GOOGLE_FORM_CONFIG.fields.whatsapp, data.whatsapp);
         }
         
         // 訂閱電子報（核取方塊）- 只有勾選時才傳送
@@ -321,15 +349,21 @@ async function submitToGoogleForm(data) {
         console.log('📤 正在提交資料到 Google 表單...');
         console.log('表單 URL:', formUrl);
         
-        // 使用 fetch 提交（no-cors 模式）
+        // 打印所有要提交的資料（用於調試）
+        console.log('=== 📋 提交的表單資料 ===');
+        for (let [key, value] of formData.entries()) {
+            console.log(`  ${key}: "${value}"`);
+        }
+        console.log('========================');
+        
+        // 使用 no-cors 模式提交（Google Forms 不允許讀取回應，但會正常提交）
         await fetch(formUrl, {
             method: 'POST',
             body: formData,
-            mode: 'no-cors' // Google Forms 需要使用 no-cors
+            mode: 'no-cors'
         });
         
-        // no-cors 模式無法讀取回應，所以假設成功
-        console.log('✅ 資料已提交到 Google 表單');
+        console.log('✅ 資料已成功提交到 Google 表單！');
         return { success: true };
     } catch (error) {
         console.error('❌ Google 表單提交失敗:', error);
@@ -365,6 +399,7 @@ function initOrderForm() {
             industry: formData.get('industry'),
             region: formData.get('region'),
             lineId: formData.get('lineId') || '未提供',
+            whatsapp: formData.get('whatsapp') || '未提供',
             newsletter: formData.get('newsletter') === 'on'
         };
         

@@ -243,13 +243,13 @@ body {
 }
 
 .video-wrapper {
-    max-width: 1200px;
+    max-width: 500px; /* 竖屏视频限制宽度 */
     margin: 0 auto;
     border-radius: 20px;
     overflow: hidden;
     box-shadow: var(--shadow);
     position: relative;
-    padding-bottom: 56.25%; /* 16:9 比例 */
+    padding-bottom: 90%; /* 10:9 比例 (略扁) */
     height: 0;
 }
 
@@ -1510,6 +1510,25 @@ body {
     .video-overlay-text {
         font-size: 2rem;
         letter-spacing: 2px;
+    }
+
+    /* 竖屏视频手机端全宽显示 */
+    .video-wrapper {
+        max-width: 100%; /* 手机端占满宽度 */
+        border-radius: 0; /* 移除圆角，更像原生体验 */
+    }
+
+    .video-section {
+        padding: 40px 0;
+    }
+
+    .video-section .container {
+        padding: 0; /* 移除左右padding */
+    }
+
+    .video-instruction {
+        padding: 0 15px;
+        margin-bottom: 15px;
     }
 }
 

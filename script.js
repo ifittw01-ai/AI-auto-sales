@@ -198,7 +198,7 @@ function showSuccessPage(userName) {
             <h2 style="color: #2ecc71; margin-bottom: 10px;">提交成功！</h2>
             <p style="font-size: 1.1rem; color: #333; margin-bottom: 30px;">
                 感謝 <strong>${userName}</strong>！<br>
-                您的資料已成功送出。
+                您已成功報名，請加入群組或是透過WhatsApp了解最新上課地點，我們將會有專人與您聯繫。
             </p>
             
             <div style="margin: 30px auto; max-width: 500px;">
@@ -245,6 +245,11 @@ function showSuccessPage(userName) {
             </button>
         </div>
     `;
+    
+    // 滾動到彈窗頂部
+    setTimeout(() => {
+        modalContent.scrollTop = 0;
+    }, 100);
 }
 
 // 初始化模态框事件

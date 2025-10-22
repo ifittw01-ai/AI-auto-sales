@@ -243,13 +243,13 @@ body {
 }
 
 .video-wrapper {
-    max-width: 500px; /* 竖屏视频限制宽度 */
+    max-width: 800px; /* 横屏视频增加宽度 */
     margin: 0 auto;
     border-radius: 20px;
     overflow: hidden;
     box-shadow: var(--shadow);
     position: relative;
-    padding-bottom: 90%; /* 10:9 比例 (略扁) */
+    padding-bottom: 56.25%; /* 16:9 横屏比例 */
     height: 0;
 }
 
@@ -1512,10 +1512,11 @@ body {
         letter-spacing: 2px;
     }
 
-    /* 竖屏视频手机端全宽显示 */
+    /* 横屏视频手机端全宽显示 */
     .video-wrapper {
         max-width: 100%; /* 手机端占满宽度 */
         border-radius: 0; /* 移除圆角，更像原生体验 */
+        padding-bottom: 56.25%; /* 保持16:9横屏比例 */
     }
 
     .video-section {

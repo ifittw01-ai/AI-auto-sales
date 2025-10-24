@@ -1,4 +1,32 @@
 // ========================================
+// 推廣人員郵箱對照表
+// ========================================
+// 在 email-mapping.html 生成代碼後，將代碼貼在這裡
+const EMAIL_MAPPING = {
+    // 範例：
+    // 'A': 'userA@gmail.com',
+    // 'B': 'userB@gmail.com',
+};
+
+// 預設郵箱（如果沒有 ref 參數）
+const DEFAULT_EMAIL = 'jordantsai777@gmail.com';
+
+// 從 URL 獲取推廣代碼
+function getReferralCode() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('ref');
+}
+
+// 根據推廣代碼獲取對應郵箱
+function getTargetEmail() {
+    const refCode = getReferralCode();
+    const email = EMAIL_MAPPING[refCode] || DEFAULT_EMAIL;
+    console.log('📧 推廣代碼:', refCode || '無');
+    console.log('📧 目標郵箱:', email);
+    return email;
+}
+
+// ========================================
 // Google 表單設定
 // ========================================
 // 從 localStorage 載入設定，如果沒有則使用預設值
@@ -398,6 +426,12 @@ function initOrderForm() {
         const formData = new FormData(form);
         const userName = formData.get('姓名');
         
+        // 添加推廣代碼到表單
+        const refCode = getReferralCode();
+        if (refCode) {
+            formData.append('推廣代碼', refCode);
+        }
+        
         // 儲存到本地作為備份
         const localData = {
             fullName: userName,
@@ -414,9 +448,15 @@ function initOrderForm() {
         
         console.log('客戶資料:', localData);
         
+        // 動態設定目標郵箱
+        const targetEmail = getTargetEmail();
+        const formAction = `https://formsubmit.co/ajax/${targetEmail}`;
+        
+        console.log('📤 準備發送到:', targetEmail);
+        
         // 使用 AJAX 提交到 FormSubmit
         try {
-            const response = await fetch(form.action, {
+            const response = await fetch(formAction, {
                 method: 'POST',
                 body: formData,
                 headers: {

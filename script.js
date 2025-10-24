@@ -416,7 +416,7 @@ function initOrderForm() {
         
         // 使用 AJAX 提交到 FormSubmit
         try {
-            await fetch(form.action, {
+            const response = await fetch(form.action, {
                 method: 'POST',
                 body: formData,
                 headers: {
@@ -424,14 +424,21 @@ function initOrderForm() {
                 }
             });
             
-            console.log('✅ 郵件發送成功！');
+            const result = await response.json();
+            
+            if (response.ok) {
+                console.log('✅ 郵件發送成功！', result);
+                // 顯示成功頁面
+                showSuccessPage(userName);
+                form.reset();
+            } else {
+                console.error('❌ 郵件發送失敗:', result);
+                alert('❌ 提交失敗，請稍後再試或直接聯繫我們的 WhatsApp/LINE');
+            }
         } catch (error) {
-            console.warn('⚠️ 郵件發送可能失敗，但已儲存到本地:', error);
+            console.error('⚠️ 郵件發送錯誤:', error);
+            alert('❌ 網路錯誤，請檢查網路連接後重試');
         }
-        
-        // 顯示成功頁面
-        showSuccessPage(userName);
-        form.reset();
         
         // 恢復按鈕狀態
         submitBtn.disabled = false;

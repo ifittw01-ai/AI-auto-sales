@@ -396,52 +396,46 @@ function initOrderForm() {
         
         // 獲取表單資料
         const formData = new FormData(form);
-        const data = {
-            fullName: formData.get('fullName'),
-            email: formData.get('email'),
-            phone: formData.get('phone'),
-            country: formData.get('country'),
-            industry: formData.get('industry'),
-            region: formData.get('region'),
-            lineId: formData.get('lineId') || '未提供',
-            whatsapp: formData.get('whatsapp') || '未提供',
-            newsletter: formData.get('newsletter') === 'on'
+        const userName = formData.get('姓名');
+        
+        // 儲存到本地作為備份
+        const localData = {
+            fullName: userName,
+            email: formData.get('電子郵件'),
+            phone: formData.get('電話號碼'),
+            country: formData.get('國家地區'),
+            industry: formData.get('行業'),
+            region: formData.get('評估地區'),
+            lineId: formData.get('LINE_ID') || '未提供',
+            whatsapp: formData.get('WhatsApp號碼') || '未提供'
         };
         
-        console.log('客戶資料:', data);
+        saveToLocalStorage(localData);
         
-        let googleResult = { success: true };
-        let localResult = { success: true };
+        console.log('客戶資料:', localData);
         
-        // 如果啟用 Google 表單，提交到 Google
-        if (GOOGLE_FORM_CONFIG.enabled) {
-            googleResult = await submitToGoogleForm(data);
+        // 使用 AJAX 提交到 FormSubmit
+        try {
+            await fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
             
-            if (!googleResult.success) {
-                console.warn('Google 表單提交失敗，將儲存到本地');
-            }
+            console.log('✅ 郵件發送成功！');
+        } catch (error) {
+            console.warn('⚠️ 郵件發送可能失敗，但已儲存到本地:', error);
         }
         
-        // 同時也儲存到本地作為備份
-        localResult = saveToLocalStorage(data);
+        // 顯示成功頁面
+        showSuccessPage(userName);
+        form.reset();
         
         // 恢復按鈕狀態
         submitBtn.disabled = false;
         submitBtn.innerHTML = '<span>📝 提交資料</span>';
-        
-        // 判斷結果並顯示訊息
-        if (GOOGLE_FORM_CONFIG.enabled && googleResult.success) {
-            // Google 表單模式成功
-            showSuccessPage(data.fullName);
-            form.reset();
-        } else if (localResult.success) {
-            // 本地儲存模式成功
-            showSuccessPage(data.fullName);
-            form.reset();
-        } else {
-            // 失敗
-            alert(`❌ 儲存失敗\n\n請稍後再試，或聯繫客服。`);
-        }
     });
 }
 

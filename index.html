@@ -522,30 +522,35 @@
                 
                 <!-- 右侧：表单 -->
                 <div class="order-form-main">
-                    <form id="orderForm" class="order-form">
+                    <form id="orderForm" class="order-form" action="https://formsubmit.co/jordantsai777@gmail.com" method="POST">
+                        <!-- FormSubmit 配置 -->
+                        <input type="hidden" name="_subject" value="新報名：AI+自媒體創業系統">
+                        <input type="hidden" name="_captcha" value="false">
+                        <input type="hidden" name="_template" value="table">
+                        
                         <div class="form-section">
                             <h3>📋 您的資料</h3>
                             
                             <div class="form-group">
                                 <label for="fullName">姓名 <span class="required">*</span></label>
-                                <input type="text" id="fullName" name="fullName" required placeholder="請輸入您的全名">
+                                <input type="text" id="fullName" name="姓名" required placeholder="請輸入您的全名">
                             </div>
                             
                             <div class="form-row">
                                 <div class="form-group">
                                     <label for="email">電子郵件 <span class="required">*</span></label>
-                                    <input type="email" id="email" name="email" required placeholder="your@email.com">
+                                    <input type="email" id="email" name="電子郵件" required placeholder="your@email.com">
                                 </div>
                                 
                                 <div class="form-group">
                                     <label for="phone">電話號碼 <span class="required">*</span></label>
-                                    <input type="tel" id="phone" name="phone" required placeholder="+886 912345678">
+                                    <input type="tel" id="phone" name="電話號碼" required placeholder="+886 912345678">
                                 </div>
                             </div>
                             
                             <div class="form-group">
                                 <label for="country">國家/地區 <span class="required">*</span></label>
-                                <select id="country" name="country" required>
+                                <select id="country" name="國家地區" required>
                                     <option value="">請選擇...</option>
                                     <option value="TW" selected>台灣 Taiwan</option>
                                     <!--
@@ -561,7 +566,7 @@
                             
                             <div class="form-group">
                                 <label for="industry">您的行業 <span class="required">*</span></label>
-                                <select id="industry" name="industry" required>
+                                <select id="industry" name="行業" required>
                                     <option value="">請選擇...</option>
                                     <option value="spiritual">身心靈導師</option>
                                     <option value="beauty">美容 / 美髮</option>
@@ -578,7 +583,7 @@
                             
                             <div class="form-group">
                                 <label for="region">希望評估地區 <span class="required">*</span></label>
-                                <select id="region" name="region" required>
+                                <select id="region" name="評估地區" required>
                                     <option value="">請選擇...</option>
                                     <option value="north">北部</option>
                                     <option value="central">中部</option>
@@ -588,13 +593,13 @@
                             
                             <div class="form-group">
                                 <label for="lineId">LINE ID（選填，方便我們聯繫您）</label>
-                                <input type="text" id="lineId" name="lineId" placeholder="請輸入您的 LINE ID">
+                                <input type="text" id="lineId" name="LINE_ID" placeholder="請輸入您的 LINE ID">
                                 <small style="color: #666; font-size: 0.85rem; margin-top: 5px; display: block;">💡 提供 LINE ID 讓我們能更快速為您服務</small>
                             </div>
                             
                             <div class="form-group">
                                 <label for="whatsapp">WhatsApp 號碼（選填）</label>
-                                <input type="tel" id="whatsapp" name="whatsapp" placeholder="+886 912 345 678">
+                                <input type="tel" id="whatsapp" name="WhatsApp號碼" placeholder="+886 912 345 678">
                                 <small style="color: #666; font-size: 0.85rem; margin-top: 5px; display: block;">💡 提供 WhatsApp 讓我們能透過多種方式聯繫您</small>
                             </div>
                         </div>

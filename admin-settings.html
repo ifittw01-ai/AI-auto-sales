@@ -246,11 +246,12 @@
                 <ol>
                     <li>在下方輸入您想要的時間地點選項</li>
                     <li>點擊「預覽效果」查看設定結果</li>
-                    <li>點擊「儲存設定並套用」保存設定</li>
-                    <li>刷新報名頁面（index.html）即可看到新設定 ✨</li>
+                    <li>點擊「生成更新代碼」獲取代碼</li>
+                    <li>複製代碼並替換 index.html 第 589-591 行</li>
+                    <li>推送到 GitHub，所有訪客都能看到新設定 🌐</li>
                 </ol>
                 <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin-top: 15px; border-left: 4px solid #ffc107;">
-                    <strong>💡 提示：</strong>設定會自動同步到報名頁面，無需手動複製代碼！
+                    <strong>⚠️ 重要：</strong>本地儲存只在您的瀏覽器有效。要讓所有訪客看到更新，必須修改 HTML 並推送到 GitHub！
                 </div>
             </div>
             
@@ -259,10 +260,6 @@
                 <div class="current-value">選項 1: <strong>10/28 下午 2:00~4:00 台北市信義區永吉路249號2樓</strong></div>
                 <div class="current-value">選項 2: <strong>10/30 晚上 6:30~8:30 台北市信義區永吉路249號2樓</strong></div>
                 <div class="current-value">選項 3: <strong>未定</strong></div>
-            </div>
-            
-            <div class="alert alert-success" id="successAlert">
-                ✅ 設定已成功儲存！
             </div>
             
             <div class="section">
@@ -317,42 +314,29 @@
             
             <div class="button-group">
                 <button class="btn btn-secondary" onclick="previewSettings()">👀 預覽效果</button>
-                <button class="btn btn-success" onclick="saveSettings()">💾 儲存設定並套用</button>
+                <button class="btn btn-primary" onclick="generateCode()">📋 生成更新代碼</button>
+            </div>
+            
+            <div class="alert alert-info" id="codeAlert" style="display: none; margin-top: 30px;">
+                <h3>📋 更新代碼</h3>
+                <p style="margin-bottom: 10px;"><strong>步驟：</strong></p>
+                <ol style="margin-left: 20px; margin-bottom: 15px;">
+                    <li>複製下方代碼</li>
+                    <li>打開 <code>index.html</code></li>
+                    <li>找到第 589-591 行</li>
+                    <li>用複製的代碼替換這三行</li>
+                    <li>執行 <code>git add index.html</code></li>
+                    <li>執行 <code>git commit -m "更新時間地點"</code></li>
+                    <li>執行 <code>git push origin main</code></li>
+                </ol>
+                <textarea id="generatedCode" readonly style="width: 100%; height: 120px; font-family: monospace; padding: 15px; border: 2px solid #17a2b8; border-radius: 8px; background: #f8f9fa; font-size: 13px;"></textarea>
+                <button onclick="copyCode()" style="margin-top: 15px; padding: 12px 30px; background: #17a2b8; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1rem;">📋 複製代碼</button>
             </div>
             
         </div>
     </div>
     
     <script>
-        // 從 localStorage 載入設定
-        function loadSettings() {
-            const saved = localStorage.getItem('timeLocationSettings');
-            if (saved) {
-                const settings = JSON.parse(saved);
-                document.getElementById('option1Value').value = settings.option1Value || '1';
-                document.getElementById('option1Text').value = settings.option1Text || '10/28 下午 2:00~4:00 台北市信義區永吉路249號2樓';
-                document.getElementById('option2Value').value = settings.option2Value || '2';
-                document.getElementById('option2Text').value = settings.option2Text || '10/30 晚上 6:30~8:30 台北市信義區永吉路249號2樓';
-                document.getElementById('option3Value').value = settings.option3Value || '3';
-                document.getElementById('option3Text').value = settings.option3Text || '未定';
-                updateCurrentSettings();
-            }
-        }
-        
-        // 更新目前設定顯示
-        function updateCurrentSettings() {
-            const option1Text = document.getElementById('option1Text').value || '北部';
-            const option2Text = document.getElementById('option2Text').value || '中部';
-            const option3Text = document.getElementById('option3Text').value || '南部';
-            
-            document.getElementById('currentSettings').innerHTML = `
-                <h3>📍 目前設定</h3>
-                <div class="current-value">選項 1: <strong>${option1Text}</strong></div>
-                <div class="current-value">選項 2: <strong>${option2Text}</strong></div>
-                <div class="current-value">選項 3: <strong>${option3Text}</strong></div>
-            `;
-        }
-        
         // 預覽效果
         function previewSettings() {
             const option1Text = document.getElementById('option1Text').value || '北部';
@@ -366,43 +350,52 @@
             document.getElementById('preview').style.display = 'block';
         }
         
-        // 儲存設定
-        function saveSettings() {
-            const settings = {
-                option1Value: document.getElementById('option1Value').value,
-                option1Text: document.getElementById('option1Text').value,
-                option2Value: document.getElementById('option2Value').value,
-                option2Text: document.getElementById('option2Text').value,
-                option3Value: document.getElementById('option3Value').value,
-                option3Text: document.getElementById('option3Text').value,
-                savedAt: new Date().toISOString()
-            };
+        // 生成代碼
+        function generateCode() {
+            const option1Value = document.getElementById('option1Value').value;
+            const option1Text = document.getElementById('option1Text').value;
+            const option2Value = document.getElementById('option2Value').value;
+            const option2Text = document.getElementById('option2Text').value;
+            const option3Value = document.getElementById('option3Value').value;
+            const option3Text = document.getElementById('option3Text').value;
             
-            localStorage.setItem('timeLocationSettings', JSON.stringify(settings));
+            const code = `                                    <option value="${option1Value}">${option1Text}</option>
+                                    <option value="${option2Value}">${option2Text}</option>
+                                    <option value="${option3Value}">${option3Text}</option>`;
             
-            // 顯示成功訊息
-            const alert = document.getElementById('successAlert');
-            alert.innerHTML = `
-                ✅ 設定已成功儲存並套用！<br>
-                <small style="margin-top: 8px; display: block;">
-                    🔄 請刷新報名頁面即可看到新的時間地點選項
-                </small>
-            `;
-            alert.style.display = 'block';
+            document.getElementById('generatedCode').value = code;
+            document.getElementById('codeAlert').style.display = 'block';
             
-            // 5秒後隱藏
-            setTimeout(() => {
-                alert.style.display = 'none';
-            }, 5000);
-            
-            updateCurrentSettings();
+            // 滾動到代碼區域
+            document.getElementById('codeAlert').scrollIntoView({ behavior: 'smooth', block: 'center' });
             
             // 自動預覽
             previewSettings();
         }
         
-        // 頁面載入時載入設定
-        window.addEventListener('DOMContentLoaded', loadSettings);
+        // 複製代碼
+        function copyCode() {
+            const codeArea = document.getElementById('generatedCode');
+            codeArea.select();
+            codeArea.setSelectionRange(0, 99999); // For mobile devices
+            
+            try {
+                document.execCommand('copy');
+                
+                // 顯示複製成功
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = '✅ 已複製！';
+                btn.style.background = '#28a745';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '#17a2b8';
+                }, 2000);
+            } catch (err) {
+                alert('複製失敗，請手動複製');
+            }
+        }
     </script>
 </body>
 </html>

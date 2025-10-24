@@ -524,6 +524,59 @@ function initVideoTracking() {
     }
 }
 
+// 動態載入時間地點設定
+function loadTimeLocationSettings() {
+    const saved = localStorage.getItem('timeLocationSettings');
+    if (saved) {
+        try {
+            const settings = JSON.parse(saved);
+            const selectElement = document.getElementById('region');
+            
+            if (selectElement) {
+                // 保留第一個"請選擇..."選項
+                const pleaseSelectOption = selectElement.querySelector('option[value=""]');
+                
+                // 清空其他選項
+                selectElement.innerHTML = '';
+                if (pleaseSelectOption) {
+                    selectElement.appendChild(pleaseSelectOption);
+                } else {
+                    const defaultOption = document.createElement('option');
+                    defaultOption.value = '';
+                    defaultOption.textContent = '請選擇...';
+                    selectElement.appendChild(defaultOption);
+                }
+                
+                // 添加自定義選項
+                if (settings.option1Text) {
+                    const option1 = document.createElement('option');
+                    option1.value = settings.option1Value || '1';
+                    option1.textContent = settings.option1Text;
+                    selectElement.appendChild(option1);
+                }
+                
+                if (settings.option2Text) {
+                    const option2 = document.createElement('option');
+                    option2.value = settings.option2Value || '2';
+                    option2.textContent = settings.option2Text;
+                    selectElement.appendChild(option2);
+                }
+                
+                if (settings.option3Text) {
+                    const option3 = document.createElement('option');
+                    option3.value = settings.option3Value || '3';
+                    option3.textContent = settings.option3Text;
+                    selectElement.appendChild(option3);
+                }
+                
+                console.log('✅ 已載入自訂時間地點設定');
+            }
+        } catch (error) {
+            console.warn('⚠️ 載入時間地點設定失敗，使用預設值:', error);
+        }
+    }
+}
+
 // 页面加载时初始化所有功能
 document.addEventListener('DOMContentLoaded', () => {
     initCountdown();
@@ -534,6 +587,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initSmoothScroll();
     initScrollAnimations();
     initVideoTracking();
+    loadTimeLocationSettings(); // 載入時間地點設定
 });
 
 // 监听页面可见性变化，暂停/恢复倒计时

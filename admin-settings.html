@@ -246,16 +246,19 @@
                 <ol>
                     <li>在下方輸入您想要的時間地點選項</li>
                     <li>點擊「預覽效果」查看設定結果</li>
-                    <li>點擊「儲存設定」保存到本地</li>
-                    <li>點擊「生成代碼」複製代碼並更新到 index.html</li>
+                    <li>點擊「儲存設定並套用」保存設定</li>
+                    <li>刷新報名頁面（index.html）即可看到新設定 ✨</li>
                 </ol>
+                <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin-top: 15px; border-left: 4px solid #ffc107;">
+                    <strong>💡 提示：</strong>設定會自動同步到報名頁面，無需手動複製代碼！
+                </div>
             </div>
             
             <div class="current-settings" id="currentSettings">
                 <h3>📍 目前設定</h3>
-                <div class="current-value">選項 1: <strong>北部</strong></div>
-                <div class="current-value">選項 2: <strong>中部</strong></div>
-                <div class="current-value">選項 3: <strong>南部</strong></div>
+                <div class="current-value">選項 1: <strong>10/28 下午 2:00~4:00 台北市信義區永吉路249號2樓</strong></div>
+                <div class="current-value">選項 2: <strong>10/30 晚上 6:30~8:30 台北市信義區永吉路249號2樓</strong></div>
+                <div class="current-value">選項 3: <strong>未定</strong></div>
             </div>
             
             <div class="alert alert-success" id="successAlert">
@@ -272,11 +275,11 @@
                     <div class="option-label">選項 1</div>
                     <div class="form-group">
                         <label for="option1Value">選項值（用於表單提交）</label>
-                        <input type="text" id="option1Value" placeholder="例如: north, time1, 2024-01-15" value="north">
+                        <input type="text" id="option1Value" placeholder="例如: 1, time1, 2024-01-15" value="1">
                     </div>
                     <div class="form-group">
                         <label for="option1Text">顯示文字（用戶看到的內容）</label>
-                        <input type="text" id="option1Text" placeholder="例如: 1/15 台北場 14:00-16:00" value="北部">
+                        <input type="text" id="option1Text" placeholder="例如: 10/28 下午 2:00~4:00 台北市..." value="10/28 下午 2:00~4:00 台北市信義區永吉路249號2樓">
                     </div>
                 </div>
                 
@@ -284,11 +287,11 @@
                     <div class="option-label">選項 2</div>
                     <div class="form-group">
                         <label for="option2Value">選項值</label>
-                        <input type="text" id="option2Value" placeholder="例如: central, time2, 2024-01-20" value="central">
+                        <input type="text" id="option2Value" placeholder="例如: 2, time2, 2024-01-20" value="2">
                     </div>
                     <div class="form-group">
                         <label for="option2Text">顯示文字</label>
-                        <input type="text" id="option2Text" placeholder="例如: 1/20 台中場 14:00-16:00" value="中部">
+                        <input type="text" id="option2Text" placeholder="例如: 10/30 晚上 6:30~8:30 台北市..." value="10/30 晚上 6:30~8:30 台北市信義區永吉路249號2樓">
                     </div>
                 </div>
                 
@@ -296,11 +299,11 @@
                     <div class="option-label">選項 3</div>
                     <div class="form-group">
                         <label for="option3Value">選項值</label>
-                        <input type="text" id="option3Value" placeholder="例如: south, time3, 2024-01-25" value="south">
+                        <input type="text" id="option3Value" placeholder="例如: 3, time3, 2024-01-25" value="3">
                     </div>
                     <div class="form-group">
                         <label for="option3Text">顯示文字</label>
-                        <input type="text" id="option3Text" placeholder="例如: 1/25 高雄場 14:00-16:00" value="南部">
+                        <input type="text" id="option3Text" placeholder="例如: 未定" value="未定">
                     </div>
                 </div>
             </div>
@@ -314,16 +317,9 @@
             
             <div class="button-group">
                 <button class="btn btn-secondary" onclick="previewSettings()">👀 預覽效果</button>
-                <button class="btn btn-success" onclick="saveSettings()">💾 儲存設定</button>
-                <button class="btn btn-primary" onclick="generateCode()">📋 生成代碼</button>
+                <button class="btn btn-success" onclick="saveSettings()">💾 儲存設定並套用</button>
             </div>
             
-            <div class="alert alert-info" id="codeAlert" style="display: none;">
-                <h3>📋 生成的代碼</h3>
-                <p style="margin-bottom: 10px;">請複製以下代碼，替換 index.html 第 589-591 行：</p>
-                <textarea id="generatedCode" readonly style="width: 100%; height: 150px; font-family: monospace; padding: 10px; border: 1px solid #bee5eb; border-radius: 5px;"></textarea>
-                <button onclick="copyCode()" style="margin-top: 10px; padding: 8px 20px; background: #17a2b8; color: white; border: none; border-radius: 5px; cursor: pointer;">📋 複製代碼</button>
-            </div>
         </div>
     </div>
     
@@ -333,12 +329,12 @@
             const saved = localStorage.getItem('timeLocationSettings');
             if (saved) {
                 const settings = JSON.parse(saved);
-                document.getElementById('option1Value').value = settings.option1Value || 'north';
-                document.getElementById('option1Text').value = settings.option1Text || '北部';
-                document.getElementById('option2Value').value = settings.option2Value || 'central';
-                document.getElementById('option2Text').value = settings.option2Text || '中部';
-                document.getElementById('option3Value').value = settings.option3Value || 'south';
-                document.getElementById('option3Text').value = settings.option3Text || '南部';
+                document.getElementById('option1Value').value = settings.option1Value || '1';
+                document.getElementById('option1Text').value = settings.option1Text || '10/28 下午 2:00~4:00 台北市信義區永吉路249號2樓';
+                document.getElementById('option2Value').value = settings.option2Value || '2';
+                document.getElementById('option2Text').value = settings.option2Text || '10/30 晚上 6:30~8:30 台北市信義區永吉路249號2樓';
+                document.getElementById('option3Value').value = settings.option3Value || '3';
+                document.getElementById('option3Text').value = settings.option3Text || '未定';
                 updateCurrentSettings();
             }
         }
@@ -386,50 +382,23 @@
             
             // 顯示成功訊息
             const alert = document.getElementById('successAlert');
+            alert.innerHTML = `
+                ✅ 設定已成功儲存並套用！<br>
+                <small style="margin-top: 8px; display: block;">
+                    🔄 請刷新報名頁面即可看到新的時間地點選項
+                </small>
+            `;
             alert.style.display = 'block';
+            
+            // 5秒後隱藏
             setTimeout(() => {
                 alert.style.display = 'none';
-            }, 3000);
+            }, 5000);
             
             updateCurrentSettings();
-        }
-        
-        // 生成代碼
-        function generateCode() {
-            const option1Value = document.getElementById('option1Value').value;
-            const option1Text = document.getElementById('option1Text').value;
-            const option2Value = document.getElementById('option2Value').value;
-            const option2Text = document.getElementById('option2Text').value;
-            const option3Value = document.getElementById('option3Value').value;
-            const option3Text = document.getElementById('option3Text').value;
             
-            const code = `                                    <option value="${option1Value}">${option1Text}</option>
-                                    <option value="${option2Value}">${option2Text}</option>
-                                    <option value="${option3Value}">${option3Text}</option>`;
-            
-            document.getElementById('generatedCode').value = code;
-            document.getElementById('codeAlert').style.display = 'block';
-            
-            // 滾動到代碼區域
-            document.getElementById('codeAlert').scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-        
-        // 複製代碼
-        function copyCode() {
-            const codeArea = document.getElementById('generatedCode');
-            codeArea.select();
-            document.execCommand('copy');
-            
-            // 顯示複製成功
-            const btn = event.target;
-            const originalText = btn.textContent;
-            btn.textContent = '✅ 已複製！';
-            btn.style.background = '#28a745';
-            
-            setTimeout(() => {
-                btn.textContent = originalText;
-                btn.style.background = '#17a2b8';
-            }, 2000);
+            // 自動預覽
+            previewSettings();
         }
         
         // 頁面載入時載入設定

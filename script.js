@@ -228,7 +228,10 @@ function showSuccessPage(userName) {
             <h2 style="color: #2ecc71; margin-bottom: 10px;">提交成功！</h2>
             <p style="font-size: 1.1rem; color: #333; margin-bottom: 30px;">
                 感謝 <strong>${userName}</strong>！<br>
-                您已成功報名，請加入群組或是透過WhatsApp了解最新上課地點，我們將會有專人與您聯繫。
+                您已成功報名，我們會協助你了解如何從零開始，用AI打造自己的副業與收入系統。
+                👉 想搶先了解限時免費內容？
+                    立即加入官方LINE 或 透過WhatApp詢問
+                    讓我們一起，用AI開啟你的創業人生🔥
             </p>
             
             <div style="margin: 30px auto; max-width: 500px;">
@@ -253,7 +256,7 @@ function showSuccessPage(userName) {
                     <h4 style="color: white; margin-bottom: 15px; font-size: 1.1rem;">
                         📱 透過 WhatsApp 聯繫
                     </h4>
-                    <a href="https://wa.me/886975497841?text=${encodeURIComponent('您好，我是 ' + userName + '，已填寫表單，想了解AI自動引客系統')}" 
+                    <a href="https://wa.me/886975497841?text=${encodeURIComponent('您好，我是 ' + userName + '，已填寫表單，想了解AI+自媒體創業系統')}" 
                        target="_blank"
                        style="display: inline-block; background: white; color: #128C7E; padding: 15px 40px; border-radius: 30px; text-decoration: none; font-weight: bold; font-size: 1.1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: transform 0.2s;"
                        onmouseover="this.style.transform='scale(1.05)'"
@@ -427,6 +430,28 @@ function initOrderForm() {
         // 獲取表單資料
         const formData = new FormData(form);
         const userName = formData.get('姓名');
+        
+        // 獲取下拉選單的完整文字（而不是只有 value）
+        // 國家地區
+        const countrySelect = document.getElementById('country');
+        if (countrySelect && countrySelect.selectedIndex > 0) {
+            const countryText = countrySelect.options[countrySelect.selectedIndex].text;
+            formData.set('國家地區', countryText);
+        }
+        
+        // 行業
+        const industrySelect = document.getElementById('industry');
+        if (industrySelect && industrySelect.selectedIndex > 0) {
+            const industryText = industrySelect.options[industrySelect.selectedIndex].text;
+            formData.set('行業', industryText);
+        }
+        
+        // 評估地區（時間地點）
+        const regionSelect = document.getElementById('region');
+        if (regionSelect && regionSelect.selectedIndex > 0) {
+            const regionText = regionSelect.options[regionSelect.selectedIndex].text;
+            formData.set('評估地區', regionText);
+        }
         
         // 添加推廣代碼到表單
         const refCode = getReferralCode();

@@ -412,12 +412,15 @@ async function submitToGoogleForm(data) {
     }
 }
 
-// 處理表單提交（使用傳統表單提交，支援動態推廣郵箱）
+// 處理表單提交（使用 Google Apps Script，支援動態推廣郵箱）
 function initOrderForm() {
     const form = document.getElementById('orderForm');
     const submitBtn = document.getElementById('submitBtn');
     
-    form.addEventListener('submit', (e) => {
+    // Google Apps Script 部署 URL
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw0pq-8iRPIThxKibSEuRCV6i4I-xigvVv1ZxFVOJ93_st2jaxrda4-8kE8S4iaURuy/exec';
+    
+    form.addEventListener('submit', async (e) => {
         e.preventDefault();
         
         // 驗證表單
@@ -433,60 +436,50 @@ function initOrderForm() {
         // 獲取用戶名稱
         const userName = form.querySelector('[name="姓名"]').value;
         
-        // 儲存用戶名到 sessionStorage（提交後會跳轉，需要記住名字）
-        sessionStorage.setItem('submittedUserName', userName);
-        
-        // 🎯 根據 ref 參數動態設定目標郵箱（推廣系統核心）
-        const targetEmail = getTargetEmail();
-        console.log('📧 推廣郵箱:', targetEmail);
-        
-        // 添加推廣代碼到表單
+        // 🎯 添加推廣代碼到表單（Google Script 會根據此判斷目標郵箱）
         const refCode = getReferralCode();
+        const targetEmail = getTargetEmail();
+        
+        console.log('🔖 推廣代碼:', refCode || '無');
+        console.log('📧 目標郵箱:', targetEmail);
+        
+        // 準備表單資料
+        const formData = new FormData(form);
         if (refCode) {
-            let refInput = form.querySelector('[name="推廣代碼"]');
-            if (!refInput) {
-                refInput = document.createElement('input');
-                refInput.type = 'hidden';
-                refInput.name = '推廣代碼';
-                form.appendChild(refInput);
-            }
-            refInput.value = refCode;
-            console.log('🔖 推廣代碼:', refCode);
+            formData.append('推廣代碼', refCode);
         }
+        formData.append('ref', refCode || '');
         
-        // 動態設置表單提交地址（傳統提交，不用 AJAX）
-        form.action = `https://formsubmit.co/${targetEmail}`;
-        form.method = 'POST';
-        
-        console.log('📤 正在提交表單到:', targetEmail);
-        
-        // 直接提交表單（FormSubmit 會處理並重定向回來）
-        form.submit();
+        try {
+            console.log('📤 正在提交到 Google Apps Script...');
+            
+            // 提交到 Google Apps Script
+            const response = await fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                body: formData
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                console.log('✅ 提交成功！郵件已發送到:', result.targetEmail || targetEmail);
+                
+                // 顯示成功頁面
+                showSuccessPage(userName);
+                form.reset();
+            } else {
+                console.error('❌ 提交失敗:', result.message);
+                alert('❌ 提交失敗，請稍後再試或直接聯繫我們的 WhatsApp/LINE\n\n錯誤: ' + result.message);
+            }
+        } catch (error) {
+            console.error('⚠️ 提交錯誤:', error);
+            alert('❌ 網路錯誤，請檢查網路連接後重試');
+        } finally {
+            // 恢復按鈕狀態
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<span>📝 提交資料</span>';
+        }
     });
-    
-    // 檢查是否從 FormSubmit 重定向回來
-    checkFormSubmitSuccess();
-}
-
-// 檢查 FormSubmit 提交成功
-function checkFormSubmitSuccess() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const userName = sessionStorage.getItem('submittedUserName');
-    
-    // 如果 URL 中有 submitted=true 參數，且有儲存的用戶名，表示提交成功
-    if (urlParams.get('submitted') === 'true' && userName) {
-        // 清除 sessionStorage
-        sessionStorage.removeItem('submittedUserName');
-        
-        // 清除 URL 中的參數（更美觀）
-        window.history.replaceState({}, document.title, window.location.pathname);
-        
-        // 顯示成功頁面
-        setTimeout(() => {
-            openModal();
-            showSuccessPage(userName);
-        }, 500);
-    }
 }
 
 // 平滑滚动

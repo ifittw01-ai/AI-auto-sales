@@ -445,6 +445,30 @@ function initOrderForm() {
         
         // 準備表單資料
         const formData = new FormData(form);
+        
+        // 🔄 獲取下拉選單的完整文字（而不是只有 value）
+        // 國家地區
+        const countrySelect = document.getElementById('country');
+        if (countrySelect && countrySelect.selectedIndex > 0) {
+            const countryText = countrySelect.options[countrySelect.selectedIndex].text;
+            formData.set('國家地區', countryText);
+        }
+        
+        // 行業
+        const industrySelect = document.getElementById('industry');
+        if (industrySelect && industrySelect.selectedIndex > 0) {
+            const industryText = industrySelect.options[industrySelect.selectedIndex].text;
+            formData.set('行業', industryText);
+        }
+        
+        // 評估地區（時間地點）
+        const regionSelect = document.getElementById('region');
+        if (regionSelect && regionSelect.selectedIndex > 0) {
+            const regionText = regionSelect.options[regionSelect.selectedIndex].text;
+            formData.set('評估地區', regionText);
+        }
+        
+        // 添加推廣代碼
         if (refCode) {
             formData.append('推廣代碼', refCode);
         }

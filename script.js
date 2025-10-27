@@ -494,15 +494,14 @@ function initOrderForm() {
                 }
             });
             
-            const result = await response.json();
-            
-            if (response.ok) {
-                console.log('✅ 郵件發送成功！', result);
+            // 只檢查 HTTP 狀態，不解析 JSON（因為 FormSubmit 可能返回非標準格式）
+            if (response.ok || response.status === 200) {
+                console.log('✅ 郵件發送成功！狀態碼:', response.status);
                 // 顯示成功頁面
                 showSuccessPage(userName);
                 form.reset();
             } else {
-                console.error('❌ 郵件發送失敗:', result);
+                console.error('❌ 郵件發送失敗，狀態碼:', response.status);
                 alert('❌ 提交失敗，請稍後再試或直接聯繫我們的 WhatsApp/LINE');
             }
         } catch (error) {

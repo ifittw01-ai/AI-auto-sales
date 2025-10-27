@@ -412,12 +412,12 @@ async function submitToGoogleForm(data) {
     }
 }
 
-// 處理表單提交
+// 處理表單提交（使用傳統表單提交，支援動態推廣郵箱）
 function initOrderForm() {
     const form = document.getElementById('orderForm');
     const submitBtn = document.getElementById('submitBtn');
     
-    form.addEventListener('submit', async (e) => {
+    form.addEventListener('submit', (e) => {
         e.preventDefault();
         
         // 驗證表單
@@ -430,89 +430,63 @@ function initOrderForm() {
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<span>⏳ 處理中...</span>';
         
-        // 獲取表單資料
-        const formData = new FormData(form);
-        const userName = formData.get('姓名');
+        // 獲取用戶名稱
+        const userName = form.querySelector('[name="姓名"]').value;
         
-        // 獲取下拉選單的完整文字（而不是只有 value）
-        // 國家地區
-        const countrySelect = document.getElementById('country');
-        if (countrySelect && countrySelect.selectedIndex > 0) {
-            const countryText = countrySelect.options[countrySelect.selectedIndex].text;
-            formData.set('國家地區', countryText);
-        }
+        // 儲存用戶名到 sessionStorage（提交後會跳轉，需要記住名字）
+        sessionStorage.setItem('submittedUserName', userName);
         
-        // 行業
-        const industrySelect = document.getElementById('industry');
-        if (industrySelect && industrySelect.selectedIndex > 0) {
-            const industryText = industrySelect.options[industrySelect.selectedIndex].text;
-            formData.set('行業', industryText);
-        }
-        
-        // 評估地區（時間地點）
-        const regionSelect = document.getElementById('region');
-        if (regionSelect && regionSelect.selectedIndex > 0) {
-            const regionText = regionSelect.options[regionSelect.selectedIndex].text;
-            formData.set('評估地區', regionText);
-        }
+        // 🎯 根據 ref 參數動態設定目標郵箱（推廣系統核心）
+        const targetEmail = getTargetEmail();
+        console.log('📧 推廣郵箱:', targetEmail);
         
         // 添加推廣代碼到表單
         const refCode = getReferralCode();
         if (refCode) {
-            formData.append('推廣代碼', refCode);
-        }
-        
-        // 儲存到本地作為備份
-        const localData = {
-            fullName: userName,
-            email: formData.get('電子郵件'),
-            phone: formData.get('電話號碼'),
-            country: formData.get('國家地區'),
-            industry: formData.get('行業'),
-            region: formData.get('評估地區'),
-            lineId: formData.get('LINE_ID') || '未提供',
-            whatsapp: formData.get('WhatsApp號碼') || '未提供'
-        };
-        
-        saveToLocalStorage(localData);
-        
-        console.log('客戶資料:', localData);
-        
-        // 動態設定目標郵箱
-        const targetEmail = getTargetEmail();
-        const formAction = `https://formsubmit.co/ajax/${targetEmail}`;
-        
-        console.log('📤 準備發送到:', targetEmail);
-        
-        // 使用 AJAX 提交到 FormSubmit
-        try {
-            const response = await fetch(formAction, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'Accept': 'application/json'
-                }
-            });
-            
-            // 只檢查 HTTP 狀態，不解析 JSON（因為 FormSubmit 可能返回非標準格式）
-            if (response.ok || response.status === 200) {
-                console.log('✅ 郵件發送成功！狀態碼:', response.status);
-                // 顯示成功頁面
-                showSuccessPage(userName);
-                form.reset();
-            } else {
-                console.error('❌ 郵件發送失敗，狀態碼:', response.status);
-                alert('❌ 提交失敗，請稍後再試或直接聯繫我們的 WhatsApp/LINE');
+            let refInput = form.querySelector('[name="推廣代碼"]');
+            if (!refInput) {
+                refInput = document.createElement('input');
+                refInput.type = 'hidden';
+                refInput.name = '推廣代碼';
+                form.appendChild(refInput);
             }
-        } catch (error) {
-            console.error('⚠️ 郵件發送錯誤:', error);
-            alert('❌ 網路錯誤，請檢查網路連接後重試');
+            refInput.value = refCode;
+            console.log('🔖 推廣代碼:', refCode);
         }
         
-        // 恢復按鈕狀態
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = '<span>📝 提交資料</span>';
+        // 動態設置表單提交地址（傳統提交，不用 AJAX）
+        form.action = `https://formsubmit.co/${targetEmail}`;
+        form.method = 'POST';
+        
+        console.log('📤 正在提交表單到:', targetEmail);
+        
+        // 直接提交表單（FormSubmit 會處理並重定向回來）
+        form.submit();
     });
+    
+    // 檢查是否從 FormSubmit 重定向回來
+    checkFormSubmitSuccess();
+}
+
+// 檢查 FormSubmit 提交成功
+function checkFormSubmitSuccess() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const userName = sessionStorage.getItem('submittedUserName');
+    
+    // 如果 URL 中有 submitted=true 參數，且有儲存的用戶名，表示提交成功
+    if (urlParams.get('submitted') === 'true' && userName) {
+        // 清除 sessionStorage
+        sessionStorage.removeItem('submittedUserName');
+        
+        // 清除 URL 中的參數（更美觀）
+        window.history.replaceState({}, document.title, window.location.pathname);
+        
+        // 顯示成功頁面
+        setTimeout(() => {
+            openModal();
+            showSuccessPage(userName);
+        }, 500);
+    }
 }
 
 // 平滑滚动

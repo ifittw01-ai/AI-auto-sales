@@ -216,11 +216,14 @@ function closeModal() {
 }
 
 // 显示成功页面
-function showSuccessPage(userName) {
+function showSuccessPage(userName, userRegion) {
     const modalContent = document.querySelector('#orderModal .modal-content');
     
     // 保存原始内容
     const originalContent = modalContent.innerHTML;
+    
+    // 准备地区显示文字
+    const regionText = userRegion ? `，評估地區：${userRegion}` : '';
     
     // 显示成功页面内容
     modalContent.innerHTML = `
@@ -231,10 +234,7 @@ function showSuccessPage(userName) {
             <h2 style="color: #2ecc71; margin-bottom: 10px;">提交成功！</h2>
             <p style="font-size: 1.1rem; color: #333; margin-bottom: 30px;">
                 感謝 <strong>${userName}</strong>！<br>
-                您已成功報名，我們會協助你了解如何從零開始，用AI打造自己的副業與收入系統。
-                👉 想搶先了解限時免費內容？
-                    立即加入官方LINE 或 透過WhatApp詢問
-                    讓我們一起，用AI開啟你的創業人生🔥
+                您已成功報名${regionText}，
             </p>
             
             <div style="margin: 30px auto; max-width: 500px;">
@@ -463,9 +463,11 @@ function initOrderForm() {
         
         // 評估地區（時間地點）
         const regionSelect = document.getElementById('region');
+        let userRegion = '';
         if (regionSelect && regionSelect.selectedIndex > 0) {
             const regionText = regionSelect.options[regionSelect.selectedIndex].text;
             formData.set('評估地區', regionText);
+            userRegion = regionText; // 保存用于显示
         }
         
         // 添加推廣代碼
@@ -489,7 +491,7 @@ function initOrderForm() {
                 console.log('✅ 提交成功！郵件已發送到:', result.targetEmail || targetEmail);
                 
                 // 顯示成功頁面
-                showSuccessPage(userName);
+                showSuccessPage(userName, userRegion);
                 form.reset();
             } else {
                 console.error('❌ 提交失敗:', result.message);

@@ -17,7 +17,12 @@ const EMAIL_MAPPING = {
     "jordantsai07": "jordantsai07@gmail.com",
     "001": "cchaha888@gmail.com",
     "002": "a0928127137@gmail.com",
-    "003": "peter.w2520701@gmail.com"
+    "003": "peter.w2520701@gmail.com",
+    "005": "gabi4507@gmail.com",
+    "006": "h0917995529@gmail.com",
+    "008": "rong20020804@gmail.com",
+    "009": "amy75301@gmail.com",
+    "010": "sasabreakfast@gmail.com"
 };
 
 const DEFAULT_EMAIL = 'jordantsai777@gmail.com';

@@ -10,7 +10,8 @@ const EMAIL_MAPPING = {
     "jordantsai07": "jordantsai07@gmail.com",
     "001": "cchaha888@gmail.com",
     "002": "a0928127137@gmail.com",
-    "003": "peter.w2520701@gmail.com"
+    "003": "peter.w2520701@gmail.com",
+    "005": "gabi4507@gmail.com"
 };
 
 // 預設郵箱（如果沒有 ref 參數）

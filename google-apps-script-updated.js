@@ -19,7 +19,7 @@
 // ⚠️ 請將下方的 SPREADSHEET_ID 改為你的 Google Sheet ID
 // 如何取得？打開你的 Google Sheet，網址中的長串英數字即為 ID
 // 例如：https://docs.google.com/spreadsheets/d/【這裡就是ID】/edit
-const SPREADSHEET_ID = '請替換成你的SHEET_ID';  // ⚠️ 必須修改
+const SPREADSHEET_ID = '1tvKaa07m-lxqyF4ZWgpOsC2ESiXBvNeN5IbA013lEf0';  // ⚠️ 必須修改
 const SHEET_NAME = '推廣人員';  // Sheet 分頁名稱
 const DEFAULT_EMAIL = 'jordantsai777@gmail.com';  // 預設郵箱（找不到推廣代碼時使用）
 const CACHE_DURATION = 600;  // 緩存時間（秒）- 10 分鐘
@@ -237,4 +237,3 @@ AI+自媒體創業系統 團隊
 function doGet(e) {
   return ContentService.createTextOutput('Google Apps Script 正在運行！請使用 POST 方法提交表單。');
 }
-

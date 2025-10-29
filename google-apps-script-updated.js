@@ -1,31 +1,102 @@
 // ========================================
-// Google Apps Script - 處理表單提交並發送郵件
+// Google Apps Script - 處理表單提交並發送郵件 (使用 Google Sheet + 緩存)
 // ========================================
 // 部署說明：
-// 1. 前往 https://script.google.com
-// 2. 找到你現有的專案（或創建新專案）
-// 3. 將此代碼複製到 Code.gs 中
-// 4. 部署為網頁應用程式
-// 5. 授權存取權限
-// 6. 複製網頁應用程式 URL 到 script.js 的 GOOGLE_SCRIPT_URL
+// 1. 創建 Google Sheet，命名為「推廣人員郵箱管理」
+//    第一列為標題：推廣代碼 | 郵箱 | 姓名（選填）
+//    從第二列開始填入資料
+// 2. 前往 https://script.google.com
+// 3. 找到你現有的專案（或創建新專案）
+// 4. 將此代碼複製到 Code.gs 中
+// 5. 修改下方的 SPREADSHEET_ID 為你的 Google Sheet ID
+// 6. 部署為網頁應用程式
+// 7. 授權存取權限
+// 8. 複製網頁應用程式 URL 到 script.js 的 GOOGLE_SCRIPT_URL
 
 // ========================================
-// 推廣人員郵箱對照表（與 script.js 保持一致）
+// 配置設定
 // ========================================
-const EMAIL_MAPPING = {
-    "jordantsai777": "jordantsai777@gmail.com",
-    "jordantsai07": "jordantsai07@gmail.com",
-    "001": "cchaha888@gmail.com",
-    "002": "a0928127137@gmail.com",
-    "003": "peter.w2520701@gmail.com",
-    "005": "gabi4507@gmail.com",
-    "006": "h0917995529@gmail.com",
-    "008": "rong20020804@gmail.com",
-    "009": "amy75301@gmail.com",
-    "010": "sasabreakfast@gmail.com"
-};
+// ⚠️ 請將下方的 SPREADSHEET_ID 改為你的 Google Sheet ID
+// 如何取得？打開你的 Google Sheet，網址中的長串英數字即為 ID
+// 例如：https://docs.google.com/spreadsheets/d/【這裡就是ID】/edit
+const SPREADSHEET_ID = '請替換成你的SHEET_ID';  // ⚠️ 必須修改
+const SHEET_NAME = '推廣人員';  // Sheet 分頁名稱
+const DEFAULT_EMAIL = 'jordantsai777@gmail.com';  // 預設郵箱（找不到推廣代碼時使用）
+const CACHE_DURATION = 600;  // 緩存時間（秒）- 10 分鐘
 
-const DEFAULT_EMAIL = 'jordantsai777@gmail.com';
+// ========================================
+// 從 Google Sheet 讀取郵箱映射表（含緩存）
+// ========================================
+function getEmailMapping() {
+  try {
+    // 1. 先嘗試從緩存讀取
+    const cache = CacheService.getScriptCache();
+    const cachedData = cache.get('EMAIL_MAPPING');
+    
+    if (cachedData) {
+      Logger.log('✅ 從緩存讀取郵箱映射表');
+      return JSON.parse(cachedData);
+    }
+    
+    // 2. 緩存過期，從 Sheet 讀取
+    Logger.log('📊 從 Google Sheet 讀取郵箱映射表...');
+    
+    const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const sheet = spreadsheet.getSheetByName(SHEET_NAME);
+    
+    if (!sheet) {
+      Logger.log('❌ 找不到工作表: ' + SHEET_NAME);
+      return {};
+    }
+    
+    const data = sheet.getDataRange().getValues();
+    const mapping = {};
+    
+    // 從第二列開始讀取（第一列是標題）
+    for (let i = 1; i < data.length; i++) {
+      const refCode = String(data[i][0]).trim();  // 第一欄：推廣代碼
+      const email = String(data[i][1]).trim();     // 第二欄：郵箱
+      
+      if (refCode && email) {
+        mapping[refCode] = email;
+      }
+    }
+    
+    Logger.log('✅ 成功讀取 ' + Object.keys(mapping).length + ' 個推廣代碼');
+    
+    // 3. 存入緩存（10 分鐘）
+    cache.put('EMAIL_MAPPING', JSON.stringify(mapping), CACHE_DURATION);
+    
+    return mapping;
+    
+  } catch (error) {
+    Logger.log('❌ 讀取郵箱映射表失敗: ' + error);
+    Logger.log('⚠️ 請檢查 SPREADSHEET_ID 是否正確');
+    return {};
+  }
+}
+
+// ========================================
+// 根據推廣代碼獲取目標郵箱
+// ========================================
+function getTargetEmail(refCode) {
+  const emailMapping = getEmailMapping();
+  const targetEmail = emailMapping[refCode] || DEFAULT_EMAIL;
+  
+  Logger.log('🔍 推廣代碼: ' + (refCode || '無'));
+  Logger.log('📧 目標郵箱: ' + targetEmail);
+  
+  return targetEmail;
+}
+
+// ========================================
+// 手動清除緩存（用於測試）
+// ========================================
+function clearCache() {
+  const cache = CacheService.getScriptCache();
+  cache.remove('EMAIL_MAPPING');
+  Logger.log('🗑️ 緩存已清除');
+}
 
 // ========================================
 // 主函數 - 處理 POST 請求
@@ -35,9 +106,9 @@ function doPost(e) {
     // 解析表單數據
     const params = e.parameter;
     
-    // 獲取推廣代碼和目標郵箱
+    // 獲取推廣代碼和目標郵箱（從 Google Sheet 讀取）
     const refCode = params.ref || params['推廣代碼'] || '';
-    const targetEmail = EMAIL_MAPPING[refCode] || DEFAULT_EMAIL;
+    const targetEmail = getTargetEmail(refCode);
     
     // 獲取客戶資料
     const customerName = params['姓名'] || '';

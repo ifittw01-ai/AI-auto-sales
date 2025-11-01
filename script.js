@@ -470,9 +470,16 @@ function initOrderForm() {
         const regionSelect = document.getElementById('region');
         let userRegion = '';
         if (regionSelect && regionSelect.selectedIndex > 0) {
-            const regionText = regionSelect.options[regionSelect.selectedIndex].text;
-            formData.set('評估地區', regionText);
-            userRegion = regionText; // 保存用于显示
+            const selectedOption = regionSelect.options[regionSelect.selectedIndex];
+            const regionText = selectedOption.text;
+            const regionId = selectedOption.value;
+            
+            // 發送完整描述（不含剩餘名額）
+            const fullDesc = selectedOption.dataset.fullDesc || regionText;
+            formData.set('評估地區', fullDesc);
+            formData.set('評估地區ID', regionId);  // 🆕 添加地區ID用於更新計數
+            
+            userRegion = regionText; // 保存用于显示（含剩餘名額）
         }
         
         // 添加推廣代碼
@@ -608,6 +615,9 @@ document.addEventListener('DOMContentLoaded', () => {
     initSmoothScroll();
     initScrollAnimations();
     initVideoTracking();
+    
+    // 🆕 載入動態評估地點
+    loadRegionOptions();
 });
 
 // 监听页面可见性变化，暂停/恢复倒计时
@@ -620,6 +630,68 @@ document.addEventListener('visibilitychange', () => {
         initCountdown();
     }
 });
+
+// ========================================
+// 動態加載評估地點（從 Google Apps Script 獲取）
+// ========================================
+async function loadRegionOptions() {
+    try {
+        const regionSelect = document.getElementById('region');
+        
+        if (!regionSelect) {
+            console.warn('⚠️ 找不到評估地區選單元素');
+            return;
+        }
+        
+        console.log('📍 正在載入評估地點選項...');
+        
+        // 顯示載入中
+        regionSelect.innerHTML = '<option value="">載入中...</option>';
+        regionSelect.disabled = true;
+        
+        const response = await fetch(GOOGLE_SCRIPT_URL + '?action=getRegions&lang=zh-TW');
+        const result = await response.json();
+        
+        if (result.success && result.regions && result.regions.length > 0) {
+            // 清空現有選項
+            regionSelect.innerHTML = '<option value="">請選擇...</option>';
+            
+            // 動態添加選項
+            result.regions.forEach(region => {
+                const option = document.createElement('option');
+                option.value = region.id;
+                option.textContent = region.text;
+                option.dataset.fullDesc = region.fullDesc; // 儲存完整描述
+                regionSelect.appendChild(option);
+            });
+            
+            regionSelect.disabled = false;
+            console.log('✅ 成功載入 ' + result.regions.length + ' 個評估地點');
+        } else {
+            console.warn('⚠️ 載入評估地點失敗，使用預設選項');
+            // 使用預設選項作為後備
+            regionSelect.innerHTML = `
+                <option value="">請選擇...</option>
+                <option value="2">11/3 星期一 晚上 7:00~9:00 捷運新店區公所站一號出口1分鐘到 北新路一段159號2樓</option>
+                <option value="3">11/5 星期三 下午 2:00~4:00 捷運新店區公所站一號出口1分鐘到 北新路一段159號2樓</option>
+            `;
+            regionSelect.disabled = false;
+        }
+    } catch (error) {
+        console.error('❌ 載入評估地點錯誤:', error);
+        
+        // 出錯時使用預設選項
+        const regionSelect = document.getElementById('region');
+        if (regionSelect) {
+            regionSelect.innerHTML = `
+                <option value="">請選擇...</option>
+                <option value="2">11/3 星期一 晚上 7:00~9:00 捷運新店區公所站一號出口1分鐘到 北新路一段159號2樓</option>
+                <option value="3">11/5 星期三 下午 2:00~4:00 捷運新店區公所站一號出口1分鐘到 北新路一段159號2樓</option>
+            `;
+            regionSelect.disabled = false;
+        }
+    }
+}
 
 // 添加急迫感效果
 function addUrgencyEffect() {

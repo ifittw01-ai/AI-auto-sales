@@ -580,10 +580,12 @@
                             <div class="form-group">
                                 <label for="region">希望評估時間地點 <span class="required">*</span></label>
                                 <select id="region" name="評估地區" required>
-                                    <option value="">請選擇...</option>
-                                    <option value="2">11/3 星期一 晚上 7:00~9:00 捷運新店區公所站一號出口1分鐘到 北新路一段159號2樓</option>
-                                    <option value="3">11/5 星期三 下午 2:00~4:00 捷運新店區公所站一號出口1分鐘到 北新路一段159號2樓</option>
+                                    <option value="">載入中...</option>
+                                    <!-- 選項將從 Google Sheet 動態載入 -->
                                 </select>
+                                <small style="color: #999; font-size: 0.85rem; margin-top: 5px; display: block;">
+                                    💡 地點由系統自動更新，顯示剩餘名額
+                                </small>
                             </div>
                             
                             <div class="form-group">

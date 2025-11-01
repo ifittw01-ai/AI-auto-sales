@@ -481,6 +481,13 @@ function initOrderForm() {
         }
         formData.append('ref', refCode || '');
         
+        // 🔍 調試：打印所有提交的資料
+        console.log('=== 📋 準備提交的表單資料 ===');
+        for (let [key, value] of formData.entries()) {
+            console.log(`  ${key}: "${value}"`);
+        }
+        console.log('========================');
+        
         try {
             console.log('📤 正在提交到 Google Apps Script...');
             

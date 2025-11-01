@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>表單調試測試</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-form {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background: #dc3545;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background: #c82333;
+        }
+        .debug-output {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            border: 1px solid #ddd;
+        }
+        .highlight {
+            background: yellow;
+            padding: 2px 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-form">
+        <h1>🔍 表單電話號碼調試測試</h1>
+        <p style="color: #666; margin-bottom: 30px;">這個測試頁面會顯示表單提交時的所有數據</p>
+        
+        <form id="testForm">
+            <div class="form-group">
+                <label for="fullName">姓名 *</label>
+                <input type="text" id="fullName" name="姓名" required value="測試用戶">
+            </div>
+            
+            <div class="form-group">
+                <label for="email">電子郵件 *</label>
+                <input type="email" id="email" name="電子郵件" required value="test@example.com">
+            </div>
+            
+            <div class="form-group">
+                <label for="phone">電話號碼 * <span class="highlight">← 重點測試欄位</span></label>
+                <input type="tel" id="phone" name="電話號碼" required placeholder="+886 912345678" value="+886 987654321">
+            </div>
+            
+            <div class="form-group">
+                <label for="country">國家/地區 *</label>
+                <select id="country" name="國家地區" required>
+                    <option value="">請選擇...</option>
+                    <option value="TW" selected>台灣 Taiwan</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="industry">您的行業 *</label>
+                <select id="industry" name="行業" required>
+                    <option value="">請選擇...</option>
+                    <option value="freelancer" selected>自由工作者</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="region">希望評估時間地點 *</label>
+                <select id="region" name="評估地區" required>
+                    <option value="">請選擇...</option>
+                    <option value="2" selected>11/3 星期一 晚上 7:00~9:00</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="lineId">LINE ID（選填）</label>
+                <input type="text" id="lineId" name="LINE_ID" placeholder="請輸入您的 LINE ID" value="testlineid">
+            </div>
+            
+            <div class="form-group">
+                <label for="whatsapp">WhatsApp 號碼（選填）</label>
+                <input type="tel" id="whatsapp" name="WhatsApp號碼" placeholder="+886 912 345 678" value="+886 912345678">
+            </div>
+            
+            <button type="submit">🔍 測試提交（不會真的發送）</button>
+        </form>
+        
+        <div class="debug-output" id="debugOutput">
+            點擊「測試提交」後，這裡會顯示所有表單數據...
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('testForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const form = this;
+            const formData = new FormData(form);
+            
+            // 處理下拉選單（與 index.html 相同的邏輯）
+            const countrySelect = document.getElementById('country');
+            if (countrySelect && countrySelect.selectedIndex > 0) {
+                const countryText = countrySelect.options[countrySelect.selectedIndex].text;
+                formData.set('國家地區', countryText);
+            }
+            
+            const industrySelect = document.getElementById('industry');
+            if (industrySelect && industrySelect.selectedIndex > 0) {
+                const industryText = industrySelect.options[industrySelect.selectedIndex].text;
+                formData.set('行業', industryText);
+            }
+            
+            const regionSelect = document.getElementById('region');
+            if (regionSelect && regionSelect.selectedIndex > 0) {
+                const regionText = regionSelect.options[regionSelect.selectedIndex].text;
+                formData.set('評估地區', regionText);
+            }
+            
+            // 顯示所有數據
+            let output = '=== 📋 表單提交的數據 ===\n\n';
+            let hasPhone = false;
+            
+            for (let [key, value] of formData.entries()) {
+                output += `${key}: "${value}"\n`;
+                if (key === '電話號碼' && value) {
+                    hasPhone = true;
+                }
+            }
+            
+            output += '\n========================\n\n';
+            
+            if (hasPhone) {
+                output += '✅ 電話號碼欄位有值！\n\n';
+                output += '如果 Google Apps Script 還是收不到電話號碼，\n';
+                output += '請檢查：\n';
+                output += '1. Google Apps Script 代碼是否已更新\n';
+                output += '2. 是否選擇「新版本」重新部署\n';
+                output += '3. 是否等待 1-2 分鐘讓部署生效\n';
+            } else {
+                output += '❌ 電話號碼欄位沒有值！\n\n';
+                output += '這是前端問題，表單沒有正確收集電話號碼\n';
+            }
+            
+            document.getElementById('debugOutput').textContent = output;
+            
+            // 也在 Console 中輸出
+            console.log('=== 📋 表單提交的數據 ===');
+            for (let [key, value] of formData.entries()) {
+                console.log(`  ${key}: "${value}"`);
+            }
+            console.log('========================');
+        });
+    </script>
+</body>
+</html>
+

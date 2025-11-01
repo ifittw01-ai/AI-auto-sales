@@ -113,20 +113,25 @@ function doPost(e) {
     // 獲取客戶資料
     const customerName = params['姓名'] || '';
     const customerEmail = params['電子郵件'] || '';
-    const customerPhone = params['電話'] || '';
+    const customerPhone = params['電話號碼'] || params['電話'] || '';
     const customerCountry = params['國家地區'] || '';
     const customerIndustry = params['行業'] || '';
     const customerRegion = params['評估地區'] || '';
-    const customerLineId = params['LINE ID'] || '未提供';
-    const customerWhatsapp = params['WhatsApp'] || '未提供';
+    const customerLineId = params['LINE_ID'] || params['LINE ID'] || '未提供';
+    const customerWhatsapp = params['WhatsApp號碼'] || params['WhatsApp'] || '未提供';
     const newsletter = params['訂閱電子報'] === 'on' ? '是' : '否';
     
     Logger.log('📧 準備發送郵件...');
     Logger.log('推廣代碼: ' + refCode);
     Logger.log('目標郵箱: ' + targetEmail);
-    Logger.log('客戶郵箱: ' + customerEmail);
     Logger.log('客戶姓名: ' + customerName);
+    Logger.log('客戶郵箱: ' + customerEmail);
+    Logger.log('客戶電話: ' + customerPhone);
+    Logger.log('國家地區: ' + customerCountry);
+    Logger.log('行業: ' + customerIndustry);
     Logger.log('評估地區: ' + customerRegion);
+    Logger.log('LINE ID: ' + customerLineId);
+    Logger.log('WhatsApp: ' + customerWhatsapp);
     
     // ========================================
     // 1. 發送通知郵件給推廣人員

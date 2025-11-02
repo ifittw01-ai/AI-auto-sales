@@ -322,6 +322,9 @@ function initModal() {
 // 資料儲存功能
 // ========================================
 
+// Google Apps Script 部署 URL（全局变量）
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw0pq-8iRPIThxKibSEuRCV6i4I-xigvVv1ZxFVOJ93_st2jaxrda4-8kE8S4iaURuy/exec';
+
 // LocalStorage 資料管理
 const STORAGE_KEY = 'customerLeads';
 
@@ -421,9 +424,6 @@ async function submitToGoogleForm(data) {
 function initOrderForm() {
     const form = document.getElementById('orderForm');
     const submitBtn = document.getElementById('submitBtn');
-    
-    // Google Apps Script 部署 URL
-    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw0pq-8iRPIThxKibSEuRCV6i4I-xigvVv1ZxFVOJ93_st2jaxrda4-8kE8S4iaURuy/exec';
     
     form.addEventListener('submit', async (e) => {
         e.preventDefault();

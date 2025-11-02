@@ -472,14 +472,9 @@ function initOrderForm() {
         if (regionSelect && regionSelect.selectedIndex > 0) {
             const selectedOption = regionSelect.options[regionSelect.selectedIndex];
             const regionText = selectedOption.text;
-            const regionId = selectedOption.value;
             
-            // 發送完整描述（不含剩餘名額）
-            const fullDesc = selectedOption.dataset.fullDesc || regionText;
-            formData.set('評估地區', fullDesc);
-            formData.set('評估地區ID', regionId);  // 🆕 添加地區ID用於更新計數
-            
-            userRegion = regionText; // 保存用于显示（含剩餘名額）
+            formData.set('評估地區', regionText);
+            userRegion = regionText; // 保存用于显示
         }
         
         // 添加推廣代碼
@@ -661,7 +656,6 @@ async function loadRegionOptions() {
                 const option = document.createElement('option');
                 option.value = region.id;
                 option.textContent = region.text;
-                option.dataset.fullDesc = region.fullDesc; // 儲存完整描述
                 regionSelect.appendChild(option);
             });
             

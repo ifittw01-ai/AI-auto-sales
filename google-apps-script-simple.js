@@ -10,6 +10,7 @@
 const SPREADSHEET_ID = '1tvKaa07m-lxqyF4ZWgpOsC2ESiXBvNeN5IbA013lEf0';  // 你的 Google Sheet ID
 const SHEET_NAME_PROMOTERS = '推廣人員';  // 推广人员工作表
 const SHEET_NAME_REGIONS = '評估地點';    // 评估地点工作表
+const SHEET_NAME_CUSTOMERS = '客戶報名記錄';  // 客户报名记录工作表
 const DEFAULT_EMAIL = 'jordantsai777@gmail.com';
 const CACHE_DURATION = 600;  // 缓存时间（秒）- 10 分钟
 
@@ -121,6 +122,75 @@ function getTargetEmail(refCode) {
 }
 
 // ========================================
+// 保存客户资料到 Google Sheet
+// ========================================
+function saveCustomerToSheet(customerData) {
+  try {
+    Logger.log('💾 正在保存客户资料到 Google Sheet...');
+    
+    const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+    let sheet = spreadsheet.getSheetByName(SHEET_NAME_CUSTOMERS);
+    
+    // 如果工作表不存在，创建它并添加标题行
+    if (!sheet) {
+      Logger.log('📝 创建新工作表: ' + SHEET_NAME_CUSTOMERS);
+      sheet = spreadsheet.insertSheet(SHEET_NAME_CUSTOMERS);
+      
+      // 添加标题行（加粗、背景色）
+      const headers = [
+        '報名時間', '客戶姓名', '電話號碼', '電子郵件', 
+        '國家地區', '行業', '評估地區', 
+        'LINE ID', 'WhatsApp', '訂閱電子報',
+        '推廣代碼', '推廣人員郵箱'
+      ];
+      
+      sheet.appendRow(headers);
+      
+      // 设置标题行格式
+      const headerRange = sheet.getRange(1, 1, 1, headers.length);
+      headerRange.setFontWeight('bold');
+      headerRange.setBackground('#4285f4');
+      headerRange.setFontColor('#ffffff');
+      
+      // 冻结标题行
+      sheet.setFrozenRows(1);
+      
+      // 自动调整列宽
+      for (let i = 1; i <= headers.length; i++) {
+        sheet.autoResizeColumn(i);
+      }
+    }
+    
+    // 添加客户数据
+    const timestamp = new Date();
+    const rowData = [
+      timestamp,                      // 报名时间
+      customerData.customerName,      // 客户姓名
+      customerData.customerPhone,     // 电话号码
+      customerData.customerEmail,     // 电子邮件
+      customerData.customerCountry,   // 国家地区
+      customerData.customerIndustry,  // 行业
+      customerData.customerRegion,    // 评估地区
+      customerData.customerLineId,    // LINE ID
+      customerData.customerWhatsapp,  // WhatsApp
+      customerData.newsletter,        // 订阅电子报
+      customerData.refCode || '无',   // 推广代码
+      customerData.targetEmail        // 推广人员邮箱
+    ];
+    
+    sheet.appendRow(rowData);
+    
+    Logger.log('✅ 成功保存客户资料到 Google Sheet');
+    return true;
+    
+  } catch (error) {
+    Logger.log('❌ 保存客户资料失败: ' + error);
+    Logger.log('详细错误: ' + error.stack);
+    return false;
+  }
+}
+
+// ========================================
 // 处理 GET 请求 - 提供评估地点 API
 // ========================================
 function doGet(e) {
@@ -183,6 +253,23 @@ function doPost(e) {
     Logger.log('客户邮箱: ' + customerEmail);
     Logger.log('客户电话: ' + customerPhone);
     Logger.log('评估地区: ' + customerRegion);
+    
+    // 💾 保存客户资料到 Google Sheet
+    const customerData = {
+      customerName: customerName,
+      customerEmail: customerEmail,
+      customerPhone: customerPhone,
+      customerCountry: customerCountry,
+      customerIndustry: customerIndustry,
+      customerRegion: customerRegion,
+      customerLineId: customerLineId,
+      customerWhatsapp: customerWhatsapp,
+      newsletter: newsletter,
+      refCode: refCode,
+      targetEmail: targetEmail
+    };
+    
+    saveCustomerToSheet(customerData);
     
     // 发送通知邮件给推广人员
     const promoterSubject = `🎯 新客户报名通知 - ${customerName}`;

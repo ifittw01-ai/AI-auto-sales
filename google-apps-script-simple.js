@@ -453,7 +453,7 @@ function debugPromoterData() {
 // ========================================
 function testPromoterCode() {
   // 👇 在这里输入您要测试的推广代码
-  const testCode = 'TEST123';  // 修改为您实际使用的推广代码
+  const testCode = '001';  // 修改为您实际使用的推广代码
   
   Logger.log('=== 测试推广代码: ' + testCode + ' ===');
   
@@ -466,6 +466,76 @@ function testPromoterCode() {
     Logger.log('⚠️ 警告：使用的是默认值，说明推广代码 "' + testCode + '" 没有在 Sheet 中找到！');
   } else {
     Logger.log('✅ 成功找到推广人员信息！');
+  }
+}
+
+// ========================================
+// 测试函数：模拟客户邮件内容
+// ========================================
+function testCustomerEmail() {
+  // 👇 修改这里来测试不同的推广代码
+  const testRefCode = '001';  // 测试推广代码，留空则测试无推广代码的情况
+  const testCustomerName = '測試客戶';
+  const testCustomerRegion = '台北市信義區 - 1月15日 下午2:00';
+  
+  Logger.log('=== 模拟客户确认邮件 ===');
+  Logger.log('测试推广代码: ' + (testRefCode || '无（直接访问）'));
+  Logger.log('');
+  
+  // 获取推广人员信息
+  const promoterInfo = getPromoterInfo(testRefCode);
+  
+  Logger.log('读取到的推广人员信息:');
+  Logger.log('  姓名: ' + promoterInfo.name);
+  Logger.log('  邮箱: ' + promoterInfo.email);
+  Logger.log('');
+  
+  // 生成邮件内容
+  const regionInfo = testCustomerRegion ? `\n\n记得您的时间与地址：${testCustomerRegion}` : '';
+  
+  const customerBody = `
+${testCustomerName}，
+
+感谢您对「AI+自媒体创业系统」有兴趣！${regionInfo}
+
+欢迎您的到来！
+
+如欲询问问题，请点选以下连结加入官方社群：
+👉 https://line.me/ti/g2/lwbHM8cXtERXRSpCKRNz1q7769jgTxzsKA7iTw?utm_source=invitation&utm_medium=link_copy&utm_campaign=default
+
+🔑 密码：13579
+
+我们期待与您在社群中见面，一起探索 AI 创业的无限可能！🚀
+
+---
+您的专属服務顾问：
+👤 姓名：${promoterInfo.name}
+📧 邮箱：${promoterInfo.email}
+
+如有任何疑问，欢迎直接联系您的顾问！
+
+---
+AI+自媒体创业系统 团队
+  `.trim();
+  
+  Logger.log('=== 客户将收到的邮件内容 ===');
+  Logger.log(customerBody);
+  Logger.log('');
+  Logger.log('=== 测试完成 ===');
+  
+  // 检查是否使用默认值
+  if (promoterInfo.name === 'AI+自媒體創業系統') {
+    Logger.log('');
+    Logger.log('⚠️⚠️⚠️ 警告 ⚠️⚠️⚠️');
+    Logger.log('客户邮件中显示的是默认值 "AI+自媒體創業系統"');
+    Logger.log('原因：推广代码 "' + testRefCode + '" 在 Google Sheet 中找不到匹配项');
+    Logger.log('');
+    Logger.log('请检查：');
+    Logger.log('1. 客户访问的 URL 是否包含正确的 ?ref=' + testRefCode);
+    Logger.log('2. Google Sheet 中是否有 "' + testRefCode + '" 这个推广代码');
+    Logger.log('3. 推广代码是否完全一致（区分大小写）');
+  } else {
+    Logger.log('✅ 推广人员信息显示正常！');
   }
 }
 

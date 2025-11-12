@@ -397,3 +397,75 @@ function clearCache() {
   Logger.log('🗑️ 缓存已清除');
 }
 
+// ========================================
+// 调试函数：查看推广人员数据（用于排查问题）
+// ========================================
+function debugPromoterData() {
+  try {
+    Logger.log('=== 开始调试推广人员数据 ===');
+    
+    const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const sheet = spreadsheet.getSheetByName(SHEET_NAME_PROMOTERS);
+    
+    if (!sheet) {
+      Logger.log('❌ 找不到工作表: ' + SHEET_NAME_PROMOTERS);
+      return;
+    }
+    
+    const data = sheet.getDataRange().getValues();
+    
+    Logger.log('📊 工作表总行数: ' + data.length);
+    Logger.log('📋 标题行 (第1行): ' + JSON.stringify(data[0]));
+    Logger.log('');
+    
+    // 显示所有推广人员数据
+    for (let i = 1; i < data.length; i++) {
+      const refCode = String(data[i][0]).trim();
+      const email = String(data[i][1]).trim();
+      const name = String(data[i][2] || '').trim();
+      
+      Logger.log(`第 ${i+1} 行数据:`);
+      Logger.log(`  推广代码 (A列): "${refCode}"`);
+      Logger.log(`  邮箱 (B列): "${email}"`);
+      Logger.log(`  姓名 (C列): "${name}"`);
+      Logger.log(`  是否有效: ${refCode && email ? '✅' : '❌'}`);
+      Logger.log('');
+    }
+    
+    // 测试读取函数
+    Logger.log('=== 测试 getPromoterMapping() 函数 ===');
+    const mapping = getPromoterMapping();
+    Logger.log('读取到的映射表:');
+    for (let code in mapping) {
+      Logger.log(`  "${code}" => { email: "${mapping[code].email}", name: "${mapping[code].name}" }`);
+    }
+    
+    Logger.log('=== 调试完成 ===');
+    
+  } catch (error) {
+    Logger.log('❌ 调试失败: ' + error);
+    Logger.log('详细错误: ' + error.stack);
+  }
+}
+
+// ========================================
+// 测试函数：测试特定推广代码
+// ========================================
+function testPromoterCode() {
+  // 👇 在这里输入您要测试的推广代码
+  const testCode = 'TEST123';  // 修改为您实际使用的推广代码
+  
+  Logger.log('=== 测试推广代码: ' + testCode + ' ===');
+  
+  const promoterInfo = getPromoterInfo(testCode);
+  
+  Logger.log('📧 推广人员邮箱: ' + promoterInfo.email);
+  Logger.log('👤 推广人员姓名: ' + promoterInfo.name);
+  
+  if (promoterInfo.name === 'AI+自媒體創業系統') {
+    Logger.log('⚠️ 警告：使用的是默认值，说明推广代码 "' + testCode + '" 没有在 Sheet 中找到！');
+  } else {
+    Logger.log('✅ 成功找到推广人员信息！');
+  }
+}
+

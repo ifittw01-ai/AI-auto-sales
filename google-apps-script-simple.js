@@ -15,19 +15,19 @@ const DEFAULT_EMAIL = 'jordantsai777@gmail.com';
 const CACHE_DURATION = 600;  // 缓存时间（秒）- 10 分钟
 
 // ========================================
-// 从 Google Sheet 读取邮箱映射表（含缓存）
+// 从 Google Sheet 读取推广人员信息（含缓存）
 // ========================================
-function getEmailMapping() {
+function getPromoterMapping() {
   try {
     const cache = CacheService.getScriptCache();
-    const cachedData = cache.get('EMAIL_MAPPING');
+    const cachedData = cache.get('PROMOTER_MAPPING');
     
     if (cachedData) {
-      Logger.log('✅ 从缓存读取邮箱映射表');
+      Logger.log('✅ 从缓存读取推广人员信息');
       return JSON.parse(cachedData);
     }
     
-    Logger.log('📊 从 Google Sheet 读取邮箱映射表...');
+    Logger.log('📊 从 Google Sheet 读取推广人员信息...');
     
     const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
     const sheet = spreadsheet.getSheetByName(SHEET_NAME_PROMOTERS);
@@ -43,19 +43,23 @@ function getEmailMapping() {
     for (let i = 1; i < data.length; i++) {
       const refCode = String(data[i][0]).trim();
       const email = String(data[i][1]).trim();
+      const name = String(data[i][2] || '').trim() || 'AI+自媒體創業系統';  // C列：姓名，如果没有则使用默认值
       
       if (refCode && email) {
-        mapping[refCode] = email;
+        mapping[refCode] = {
+          email: email,
+          name: name
+        };
       }
     }
     
-    Logger.log('✅ 成功读取 ' + Object.keys(mapping).length + ' 个推广代码');
-    cache.put('EMAIL_MAPPING', JSON.stringify(mapping), CACHE_DURATION);
+    Logger.log('✅ 成功读取 ' + Object.keys(mapping).length + ' 个推广人员信息');
+    cache.put('PROMOTER_MAPPING', JSON.stringify(mapping), CACHE_DURATION);
     
     return mapping;
     
   } catch (error) {
-    Logger.log('❌ 读取邮箱映射表失败: ' + error);
+    Logger.log('❌ 读取推广人员信息失败: ' + error);
     return {};
   }
 }
@@ -109,16 +113,22 @@ function getRegionList() {
 }
 
 // ========================================
-// 根据推广代码获取目标邮箱
+// 根据推广代码获取推广人员信息
 // ========================================
-function getTargetEmail(refCode) {
-  const emailMapping = getEmailMapping();
-  const targetEmail = emailMapping[refCode] || DEFAULT_EMAIL;
+function getPromoterInfo(refCode) {
+  const promoterMapping = getPromoterMapping();
+  const defaultInfo = {
+    email: DEFAULT_EMAIL,
+    name: 'AI+自媒體創業系統'
+  };
+  
+  const promoterInfo = promoterMapping[refCode] || defaultInfo;
   
   Logger.log('🔍 推广代码: ' + (refCode || '无'));
-  Logger.log('📧 目标邮箱: ' + targetEmail);
+  Logger.log('📧 推广人员邮箱: ' + promoterInfo.email);
+  Logger.log('👤 推广人员姓名: ' + promoterInfo.name);
   
-  return targetEmail;
+  return promoterInfo;
 }
 
 // ========================================
@@ -141,7 +151,7 @@ function saveCustomerToSheet(customerData) {
         '報名時間', '客戶姓名', '電話號碼', '電子郵件', 
         '國家地區', '行業', '評估地區', 
         'LINE ID', 'WhatsApp', '訂閱電子報',
-        '推廣代碼', '推廣人員郵箱'
+        '推廣代碼', '推廣人員姓名', '推廣人員郵箱'
       ];
       
       sheet.appendRow(headers);
@@ -175,6 +185,7 @@ function saveCustomerToSheet(customerData) {
       customerData.customerWhatsapp,  // WhatsApp
       customerData.newsletter,        // 订阅电子报
       customerData.refCode || '无',   // 推广代码
+      customerData.promoterName || 'AI+自媒體創業系統',  // 推广人员姓名
       customerData.targetEmail        // 推广人员邮箱
     ];
     
@@ -231,9 +242,9 @@ function doPost(e) {
   try {
     const params = e.parameter;
     
-    // 获取推广代码和目标邮箱
+    // 获取推广代码和推广人员信息
     const refCode = params.ref || params['推廣代碼'] || '';
-    const targetEmail = getTargetEmail(refCode);
+    const promoterInfo = getPromoterInfo(refCode);
     
     // 获取客户资料
     const customerName = params['姓名'] || '';
@@ -248,7 +259,7 @@ function doPost(e) {
     
     Logger.log('📧 准备发送邮件...');
     Logger.log('推广代码: ' + refCode);
-    Logger.log('目标邮箱: ' + targetEmail);
+    Logger.log('推广人员: ' + promoterInfo.name + ' (' + promoterInfo.email + ')');
     Logger.log('客户姓名: ' + customerName);
     Logger.log('客户邮箱: ' + customerEmail);
     Logger.log('客户电话: ' + customerPhone);
@@ -266,7 +277,8 @@ function doPost(e) {
       customerWhatsapp: customerWhatsapp,
       newsletter: newsletter,
       refCode: refCode,
-      targetEmail: targetEmail
+      targetEmail: promoterInfo.email,
+      promoterName: promoterInfo.name
     };
     
     saveCustomerToSheet(customerData);
@@ -274,7 +286,7 @@ function doPost(e) {
     // 发送通知邮件给推广人员
     const promoterSubject = `🎯 新客户报名通知 - ${customerName}`;
     const promoterBody = `
-亲爱的推广伙伴，
+亲爱的 ${promoterInfo.name}，
 
 恭喜！您有一位新客户报名了！
 
@@ -308,11 +320,11 @@ AI+自媒体创业系统
     
     try {
       MailApp.sendEmail({
-        to: targetEmail,
+        to: promoterInfo.email,
         subject: promoterSubject,
         body: promoterBody
       });
-      Logger.log('✅ 已发送邮件给推广人员: ' + targetEmail);
+      Logger.log('✅ 已发送邮件给推广人员: ' + promoterInfo.email);
     } catch (error) {
       Logger.log('❌ 发送推广人员邮件失败: ' + error);
     }
@@ -337,6 +349,13 @@ ${customerName}，
 我们期待与您在社群中见面，一起探索 AI 创业的无限可能！🚀
 
 ---
+您的专属服務顾问：
+👤 姓名：${promoterInfo.name}
+📧 邮箱：${promoterInfo.email}
+
+如有任何疑问，欢迎直接联系您的顾问！
+
+---
 AI+自媒体创业系统 团队
       `.trim();
       
@@ -355,7 +374,8 @@ AI+自媒体创业系统 团队
     return ContentService.createTextOutput(JSON.stringify({
       success: true,
       message: '提交成功！',
-      targetEmail: targetEmail
+      targetEmail: promoterInfo.email,
+      promoterName: promoterInfo.name
     })).setMimeType(ContentService.MimeType.JSON);
     
   } catch (error) {
@@ -373,6 +393,7 @@ AI+自媒体创业系统 团队
 function clearCache() {
   const cache = CacheService.getScriptCache();
   cache.remove('EMAIL_MAPPING');
+  cache.remove('PROMOTER_MAPPING');
   Logger.log('🗑️ 缓存已清除');
 }
 

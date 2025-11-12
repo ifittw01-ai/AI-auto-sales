@@ -183,10 +183,10 @@ function saveCustomerToSheet(customerData) {
       customerData.customerRegion,    // 评估地区
       customerData.customerLineId,    // LINE ID
       customerData.customerWhatsapp,  // WhatsApp
-      customerData.newsletter,        // 订阅电子报
-      customerData.refCode || '无',   // 推广代码
-      customerData.promoterName || 'AI+自媒體創業系統',  // 推广人员姓名
-      customerData.targetEmail        // 推广人员邮箱
+      customerData.newsletter,        // 訂閱電子報
+      customerData.refCode || '無',   // 推廣代碼
+      customerData.promoterName || 'AI+自媒體創業系統',  // 推廣人員姓名
+      customerData.targetEmail        // 推廣人員郵箱
     ];
     
     sheet.appendRow(rowData);

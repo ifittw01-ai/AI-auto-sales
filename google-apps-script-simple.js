@@ -283,39 +283,39 @@ function doPost(e) {
     
     saveCustomerToSheet(customerData);
     
-    // 发送通知邮件给推广人员
-    const promoterSubject = `🎯 新客户报名通知 - ${customerName}`;
+    // 發送通知郵件給推廣人員
+    const promoterSubject = `🎯 新客戶報名通知 - ${customerName}`;
     const promoterBody = `
-亲爱的 ${promoterInfo.name}，
+親愛的 ${promoterInfo.name}，
 
-恭喜！您有一位新客户报名了！
+恭喜！您有一位新客戶報名了！
 
-=== 📋 客户资讯 ===
+=== 📋 客戶資訊 ===
 姓名：${customerName}
-电子邮件：${customerEmail}
-电话：${customerPhone}
-国家地区：${customerCountry}
-行业：${customerIndustry}
-评估地区：${customerRegion}
+電子郵件：${customerEmail}
+電話：${customerPhone}
+國家地區：${customerCountry}
+行業：${customerIndustry}
+評估地區：${customerRegion}
 LINE ID：${customerLineId}
 WhatsApp：${customerWhatsapp}
-订阅电子报：${newsletter}
+訂閱電子報：${newsletter}
 
-推广代码：${refCode || '无（预设）'}
+推廣代碼：${refCode || '無（預設）'}
 
-=== 📞 下一步行动 ===
-请尽快联系这位客户，提供优质的服务体验！
+=== 📞 下一步行動 ===
+請儘快聯繫這位客戶，提供優質的服務體驗！
 
-建议联系方式：
+建議聯繫方式：
 📧 Email: ${customerEmail}
 📱 WhatsApp: ${customerWhatsapp !== '未提供' ? customerWhatsapp : customerPhone}
 💬 LINE: ${customerLineId}
 
-祝您成交顺利！🎉
+祝您成交順利！🎉
 
 ---
-AI+自媒体创业系统
-自动通知系统
+AI+自媒體創業系統
+自動通知系統
     `.trim();
     
     try {
@@ -329,34 +329,34 @@ AI+自媒体创业系统
       Logger.log('❌ 发送推广人员邮件失败: ' + error);
     }
     
-    // 发送确认邮件给报名客户
+    // 發送確認郵件給報名客戶
     if (customerEmail) {
-      const customerSubject = `感谢您报名「AI+自媒体创业系统」`;
-      const regionInfo = customerRegion ? `\n\n记得您的时间与地址：${customerRegion}` : '';
+      const customerSubject = `感謝您報名「AI+自媒體創業系統」`;
+      const regionInfo = customerRegion ? `\n\n記得您的時間與地址：${customerRegion}` : '';
       
       const customerBody = `
 ${customerName}，
 
-感谢您对「AI+自媒体创业系统」有兴趣！${regionInfo}
+感謝您對「AI+自媒體創業系統」有興趣！${regionInfo}
 
-欢迎您的到来！
+歡迎您的到來！
 
-如欲询问问题，请点选以下连结加入官方社群：
+如欲詢問問題，請點選以下連結加入官方社群：
 👉 https://line.me/ti/g2/lwbHM8cXtERXRSpCKRNz1q7769jgTxzsKA7iTw?utm_source=invitation&utm_medium=link_copy&utm_campaign=default
 
-🔑 密码：13579
+🔑 密碼：13579
 
-我们期待与您在社群中见面，一起探索 AI 创业的无限可能！🚀
+我們期待與您在社群中見面，一起探索 AI 創業的無限可能！🚀
 
 ---
-您的专属服務顾问：
+您的專屬服務顧問：
 👤 姓名：${promoterInfo.name}
-📧 邮箱：${promoterInfo.email}
+📧 郵箱：${promoterInfo.email}
 
-如有任何疑问，欢迎直接联系您的顾问！
+如有任何疑問，歡迎直接聯繫您的顧問！
 
 ---
-AI+自媒体创业系统 团队
+AI+自媒體創業系統 團隊
       `.trim();
       
       try {
@@ -490,32 +490,32 @@ function testCustomerEmail() {
   Logger.log('  邮箱: ' + promoterInfo.email);
   Logger.log('');
   
-  // 生成邮件内容
-  const regionInfo = testCustomerRegion ? `\n\n记得您的时间与地址：${testCustomerRegion}` : '';
+  // 生成郵件內容
+  const regionInfo = testCustomerRegion ? `\n\n記得您的時間與地址：${testCustomerRegion}` : '';
   
   const customerBody = `
 ${testCustomerName}，
 
-感谢您对「AI+自媒体创业系统」有兴趣！${regionInfo}
+感謝您對「AI+自媒體創業系統」有興趣！${regionInfo}
 
-欢迎您的到来！
+歡迎您的到來！
 
-如欲询问问题，请点选以下连结加入官方社群：
+如欲詢問問題，請點選以下連結加入官方社群：
 👉 https://line.me/ti/g2/lwbHM8cXtERXRSpCKRNz1q7769jgTxzsKA7iTw?utm_source=invitation&utm_medium=link_copy&utm_campaign=default
 
-🔑 密码：13579
+🔑 密碼：13579
 
-我们期待与您在社群中见面，一起探索 AI 创业的无限可能！🚀
+我們期待與您在社群中見面，一起探索 AI 創業的無限可能！🚀
 
 ---
-您的专属服務顾问：
+您的專屬服務顧問：
 👤 姓名：${promoterInfo.name}
-📧 邮箱：${promoterInfo.email}
+📧 郵箱：${promoterInfo.email}
 
-如有任何疑问，欢迎直接联系您的顾问！
+如有任何疑問，歡迎直接聯繫您的顧問！
 
 ---
-AI+自媒体创业系统 团队
+AI+自媒體創業系統 團隊
   `.trim();
   
   Logger.log('=== 客户将收到的邮件内容 ===');

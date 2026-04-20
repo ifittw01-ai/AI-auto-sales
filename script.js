@@ -264,7 +264,7 @@ function showSuccessPage(userName, userRegion) {
                     <h4 style="color: white; margin-bottom: 15px; font-size: 1.1rem;">
                         📱 透過 WhatsApp 聯繫
                     </h4>
-                    <a href="https://wa.me/886975497841?text=${encodeURIComponent('您好，我是 ' + userName + '，已填寫表單，想了解AI+自媒體創業系統')}" 
+                    <a href="https://wa.me/886975497841?text=${encodeURIComponent('您好，我是 ' + userName + '，已填寫表單，想了解兩岸法拍接班人')}" 
                        target="_blank"
                        style="display: inline-block; background: white; color: #128C7E; padding: 15px 40px; border-radius: 30px; text-decoration: none; font-weight: bold; font-size: 1.1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: transform 0.2s;"
                        onmouseover="this.style.transform='scale(1.05)'"

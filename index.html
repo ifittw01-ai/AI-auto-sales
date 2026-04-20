@@ -3,53 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI+自媒體創業系統 - 打造個人賺錢機器</title>
+    <title>兩岸法拍接班人 - 打造個人賺錢機器</title>
     
     <!-- Open Graph / 社交媒體分享預覽 - LINE專用優化 -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="AI+自媒體創業系統 - 打造個人賺錢機器">
-    <meta property="og:description" content="限時優惠！AI+自媒體創業系統，前100名無需付費，原價NT$2000元，現在報名免費！">
-    <meta property="og:url" content="https://ifittw01-ai.github.io/AI-auto-sales/?line=20241222">
-    <meta property="og:image" content="https://ifittw01-ai.github.io/AI-auto-sales/data/AIMakeMoney.png?v=line2024&t=1222&cache=clear">
-    <meta property="og:image:secure_url" content="https://ifittw01-ai.github.io/AI-auto-sales/data/AIMakeMoney.png?v=line2024&t=1222&cache=clear">
+    <meta property="og:title" content="兩岸法拍接班人 - 打造個人賺錢機器">
+    <meta property="og:description" content="限時優惠！兩岸法拍接班人，前100名無需付費，原價NT$2000元，現在報名免費！">
+    <meta property="og:url" content="https://ifittw01-ai.github.io/AI-PT/">
+    <meta property="og:image" content="https://ifittw01-ai.github.io/AI-PT/data/top.png?v=20260221b">
+    <meta property="og:image:secure_url" content="https://ifittw01-ai.github.io/AI-PT/data/top.png?v=20260221b">
     <meta property="og:image:type" content="image/png">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="AI+自媒體創業系統">
+    <meta property="og:image:width" content="1100">
+    <meta property="og:image:height" content="1000">
+    <meta property="og:image:alt" content="兩岸法拍接班人">
     
     <!-- LINE專用優化 -->
     <meta name="line:card" content="summary_large_image">
-    <meta name="line:title" content="AI+自媒體創業系統 - 打造個人賺錢機器">
-    <meta name="line:description" content="限時優惠！AI+自媒體創業系統，前100名無需付費，原價NT$2000元，現在報名免費！">
-    <meta name="line:image" content="https://ifittw01-ai.github.io/AI-auto-sales/data/AIMakeMoney.png?v=line2024&t=1222&cache=clear">
+    <meta name="line:title" content="兩岸法拍接班人 - 打造個人賺錢機器">
+    <meta name="line:description" content="限時優惠！兩岸法拍接班人，前100名無需付費，原價NT$2000元，現在報名免費！">
+    <meta name="line:image" content="https://ifittw01-ai.github.io/AI-PT/data/top.png?v=20260221b">
     
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="AI+自媒體創業系統 - 打造個人賺錢機器">
-    <meta name="twitter:description" content="限時優惠！AI+自媒體創業系統，前100名無需付費，原價NT$2000元，現在報名免費！">
-    <meta name="twitter:image" content="https://ifittw01-ai.github.io/AI-auto-sales/data/AIMakeMoney.png?v=4&cache=clear&refresh=true">
+    <meta name="twitter:title" content="兩岸法拍接班人 - 打造個人賺錢機器">
+    <meta name="twitter:description" content="限時優惠！兩岸法拍接班人，前100名無需付費，原價NT$2000元，現在報名免費！">
+    <meta name="twitter:image" content="https://ifittw01-ai.github.io/AI-PT/data/top.png?v=20260221b">
     
     <!-- Canonical URL -->
-    <link rel="canonical" href="https://ifittw01-ai.github.io/AI-auto-sales/">
+    <link rel="canonical" href="https://ifittw01-ai.github.io/AI-PT/">
     
     <!-- Additional meta tags for better social media recognition -->
-    <meta name="description" content="限時優惠！AI+自媒體創業系統，前100名無需付費，原價NT$2000元，現在報名免費！">
+    <meta name="description" content="限時優惠！兩岸法拍接班人，前100名無需付費，原價NT$2000元，現在報名免費！">
     <meta name="keywords" content="AI,自媒體,創業,賺錢,線上課程,限時優惠">
     
     <link rel="stylesheet" href="styles.css">
+    
+    <!-- 预加载关键资源 -->
+    <link rel="preload" href="styles.css" as="style">
+    <link rel="preload" href="translations.js" as="script">
+    <link rel="preload" href="script.js" as="script">
+    
+    <!-- DNS 预解析 -->
+    <link rel="dns-prefetch" href="https://script.google.com">
+    <link rel="dns-prefetch" href="https://cdn.sheetjs.com">
+    
     <!-- SheetJS 用於生成 Excel -->
-    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js" defer></script>
 </head>
 <body>
-    <!-- 顶部主视觉图 -->
+    <!-- 页面加载进度条 -->
+    <div id="loading-bar"></div>
     
+    <!-- 語言切換器 -->
+    <div class="language-switcher">
+        <select id="language-select" onchange="setLanguage(this.value)">
+            <option value="zh-TW">繁體中文</option>
+            <option value="zh-CN">简体中文</option>
+            <option value="en">English</option>
+        </select>
+    </div>
 
     <!-- 顶部优惠倒计时横幅 -->
     <div class="top-banner">
         <div class="container">
-            <p>⚡ 限時線上報名！截止時間僅剩 <span id="countdown-banner">15:00:00</span></p>
+            <p><span data-i18n="countdown-banner-text">⚡ 限時線上報名！截止時間僅剩</span> <span id="countdown-banner">15:00:00</span></p>
         </div>
     </div>
+
+    
+
+    <!-- 顶部主视觉图 -->
+    <div class="hero-image-section">
+        <div class="hero-image-wrapper">
+            <div class="hero-image-frame">
+                <img src="data/top.png" alt="兩岸法拍接班人" class="hero-top-image" loading="lazy" width="1100" height="1000">
+                <!-- div class="hero-top-cta-group">
+                    <p class="current-price hero-top-price"><span class="highlight" data-i18n="highlight">限時免費</span>！</p>
+                    <button class="cta-button pulse hero-top-cta" data-i18n="cta-button">搶先報名</button>
+                </div>
+                -->
+            </div>
+        </div>
+    </div>
+
+    <div class="hero-image-section">
+        <div class="hero-image-wrapper">
+            <img src="data/top1.png" alt="兩岸法拍接班人" class="hero-top-image" loading="lazy" width="1100" height="530">
+        </div>
+    </div>
+    <!-- 短影音重點內容 
+    <section class="short-video-note">
+        <div class="container">
+            <div class="note-layout">
+                <div class="note-content">
+                    <h2>短影音有兩件事情不要做</h2>
+                    <div class="note-item">
+                        <p class="note-title">第一.「不要拼質量」</p>
+                        <p>一樣是超市話題，全聯最高觀看是 100 多萬；CitySuper 最高就是 5 萬。</p>
+                        <p>有些話題，天生是有流量上限的。你再怎麼努力，都很難打破這個上限。</p>
+                    </div>
+                    <div class="note-item">
+                        <p class="note-title">第二.「不要講乾貨」</p>
+                        <p>短影音的本質是娛樂場。大家什麼時候滑手機？枕上、廁上、馬上，全是想放鬆的時候。</p>
+                        <p>手機就像一個夜市，觀眾就是逛夜市的人。</p>
+                        <p>你在影片上面講乾貨、講專業，就像在夜市裡面賣高級法國料理一樣，沒流量不用怪別人。</p>
+                        <p>不是你的東西不好，是場景不對。你的專業，永遠只能吸引同行。</p>
+                        <p>我就問你，你辛苦拍片，是為了增加客戶，還是吸引同行？</p>
+                    </div>
+                    <div class="note-cta">
+                        <p class="note-title">歡迎來聽我的 2 小時「兩岸法拍接班人」體驗課</p>
+                        <p>在體驗課，我還會分享：</p>
+                        <p class="note-bullet">- 真實分析我的成功案例，讓你了解網路陌生開發操盤邏輯。</p>
+                    </div>
+                    <div class="note-action">
+                        <button class="cta-button note-action-btn" onclick="openModal()">立即報名</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- Hero Section -->
     <section class="hero-section">
@@ -58,45 +130,39 @@
                 <p>Windows | macOS | Android | iOS / iPadOS| Virtual | AWS | IBM | Google | Microsoft | Apple | Amazon | Facebook | Twitter | Instagram | LinkedIn | YouTube | TikTok | </p>
             </div>-->
             
-            <h1 class="main-headline">
+            <h1 class="main-headline" data-i18n="main-headline">
                 別再等機會，用AI創造機會！
             </h1>
             
             <div class="offer-box">
-                <ul class="features-list">
-                    <li>✅ 用AI與自媒體，打造屬於你的事業系統！</li>
-                    <li>✅ 從零開始，用AI開啟你的創業人生！</li>
-                    <li>✅ 不需要懂技術，不需要大資金，只要願意學、願意行動</li>
-                    <li>✅ 下一波創業潮，不是開店、不是加盟，而是「AI＋自媒體」</li>
-                </ul>
                 
                 <div class="pricing">
-                    <p class="original-price">AI＋自媒體創業系統<span class="strikethrough">NT$2,000元.</span></p>
-                    <p class="current-price">✅ 立即了解 <span class="highlight">限時免費</span>！</p>
+                    <p class="original-price"><span data-i18n="original-price">AI＋自媒體創業系統</span><span class="strikethrough">NT$2,000元.</span></p>
+                    <p class="current-price"><span data-i18n="current-price">✅ 立即了解</span> <span class="highlight" data-i18n="highlight">限時免費</span>！</p>
                 </div>
                 
-                <button class="cta-button pulse">搶先報名</button>
+                <button class="cta-button pulse" data-i18n="cta-button">搶先報名</button>
                 
-                <p class="urgency-text">⏱️ 優惠結束 → 立刻回到 NT$2,000！截止 11.59pm ⏱️</p>
+                <p class="urgency-text" data-i18n="urgency-text">⏱️ 優惠結束 → 立刻回到 NT$2,000！截止 11.59pm ⏱️</p>
             </div>
 
             <!-- 倒计时器 -->
             <div class="countdown-timer">
                 <div class="timer-item">
                     <span class="timer-value" id="days">00</span>
-                    <span class="timer-label">天</span>
+                    <span class="timer-label" data-i18n="timer-days">天</span>
                 </div>
                 <div class="timer-item">
                     <span class="timer-value" id="hours">00</span>
-                    <span class="timer-label">時</span>
+                    <span class="timer-label" data-i18n="timer-hours">時</span>
                 </div>
                 <div class="timer-item">
                     <span class="timer-value" id="minutes">00</span>
-                    <span class="timer-label">分</span>
+                    <span class="timer-label" data-i18n="timer-minutes">分</span>
                 </div>
                 <div class="timer-item">
                     <span class="timer-value" id="seconds">00</span>
-                    <span class="timer-label">秒</span>
+                    <span class="timer-label" data-i18n="timer-seconds">秒</span>
                 </div>
             </div>
         </div>
@@ -105,48 +171,69 @@
     <!-- 视频演示区 -->
     <section class="video-section">
         <div class="container">
-            <p class="video-instruction">🔊 確保你打開聲音，等待影片載入...</p>
+            <p class="video-instruction" data-i18n="video-instruction">🔊 確保你打開聲音，等待影片載入...</p>
             <div class="video-wrapper">
                 <video id="mainVideo" width="100%" height="100%" controls controlsList="nodownload" autoplay muted loop playsinline style="border: none;">
                     <source src="data/IG6.mp4" type="video/mp4">
                     您的瀏覽器不支援影片播放。
                 </video>
             </div>
+            <img src="data/top2.png" alt="兩岸法拍接班人" class="video-below-image" loading="lazy" width="1200" height="530">
         </div>
     </section>
 
-    <!-- 目标受众区 -->
+    <section class="short-video-note">
+        <div class="container">
+            <div class="note-layout">
+                <div class="note-content">
+                    <div class="note-item">
+                        <p class="note-title">做AI 做短影音的最大錯誤</p>
+                        <p>就是不參考、不做功課，靠感覺。</p>
+                        <p>但其實任何形式的創作，都一定有架構可循，</p>
+                        <p>要相信成功是可以複製的。</p> 
+                        <p>我們把成功經驗，整理成一套系統分享給你 </p>
+                    </div>
+                    <div class="note-action">
+                        <button class="cta-button note-action-btn" onclick="openModal()">立即報名</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+   
+
+    <!-- 目标受众区 
     <section class="target-audience">
         <div class="container">
-            <h2 class="section-title">誰適合與需要？</h2>
+            <h2 class="section-title" data-i18n="target-audience-title">誰適合與需要？</h2>
             <div class="audience-grid">
                 <div class="audience-card">
-                    <h3>做預約服務的你</h3>
-                    <p>顧問 / 諮詢師 / 美容 / 教育 / 交易導師</p>
-                    <p>
+                    <h3 data-i18n="audience-1-title">做預約服務的你</h3>
+                    <p data-i18n="audience-1-subtitle">顧問 / 諮詢師 / 美容 / 教育 / 交易導師</p>
+                    <p data-i18n="audience-1-text">
                         🌍 在這個AI時代，你不需要等待別人給你機會。
                         現在，人人都能用AI打造個人品牌、開啟第二收入，
                         即使沒有技術、沒有團隊，也能靠AI+自媒體創造被動收入！</p>
                 </div>
                 <div class="audience-card">
-                    <h3>做招商加盟的你</h3>
-                    <p>保險團隊 / 微商 / 餐飲招商</p>
-                    <p>🌍 我們幫助你建立一套完整的「AI × 自媒體創業系統」——
+                    <h3 data-i18n="audience-2-title">做招商加盟的你</h3>
+                    <p data-i18n="audience-2-subtitle">保險團隊 / 微商 / 餐飲招商</p>
+                    <p data-i18n="audience-2-text">🌍 我們幫助你建立一套完整的「AI × 自媒體創業系統」——
                         從AI工具應用、內容行銷、品牌打造，到獲利變現，
                         一步步帶你從0開始，找到你的人生新方向。</p>
                 </div>
                 <div class="audience-card">
-                    <h3>每天上班打卡的你</h3>
-                       <p>行政 / 會計 / 助理 / 客服 / 行銷 / 內勤業務 / 社群小編</p>
-                    <p>🌍 無論你是媽媽、上班族、自由工作者、或剛起步的創業者，
+                    <h3 data-i18n="audience-3-title">每天上班打卡的你</h3>
+                       <p data-i18n="audience-3-subtitle">行政 / 會計 / 助理 / 客服 / 行銷 / 內勤業務 / 社群小編</p>
+                    <p data-i18n="audience-3-text">🌍 無論你是媽媽、上班族、自由工作者、或剛起步的創業者，
                         只要你願意學習、願意改變，
                         這套系統就能讓你用AI放大你的能力，
                         讓世界看見你、聽見你、並願意為你的價值付費。</p>
                 </div>
                 <div class="audience-card">
-                    <h3>做網路新媒體的你</h3>
-                    <p>自由業者 / 網路服務 / 個人教練 / 課程銷售 / 網紅 / 自媒體</p>
-                    <p>🌍 你不是沒能力，只是缺少一個能讓努力變現的系統，
+                    <h3 data-i18n="audience-4-title">做網路新媒體的你</h3>
+                    <p data-i18n="audience-4-subtitle">自由業者 / 網路服務 / 個人教練 / 課程銷售 / 網紅 / 自媒體</p>
+                    <p data-i18n="audience-4-text">🌍 你不是沒能力，只是缺少一個能讓努力變現的系統，
                         才華一直都在，只需要一個方法，讓它變成收入。
                         你不是沒機會，只是還沒用對工具與方向。</p>
                 </div>
@@ -154,81 +241,35 @@
         </div>
     </section>
 
-    <!-- Before vs After 对比区 -->
-    <section class="comparison-section">
+    <section class="short-video-note">
         <div class="container">
-            <div class="comparison-wrapper">
-                <div class="before-box">
-                    <!-- 痛点图片 -->
-                    <div class="comparison-image-wrapper">
-                        <img src="data/cannot get customer.png" alt="無法獲客的困擾" class="comparison-image" loading="lazy">
+            <div class="note-layout">
+                <div class="note-content">
+                    <div class="note-item">
+                        <p class="note-title">上變現課的同學，主要有</p>
+                        <p>1. 中小企業主：電商、傳產、餐飲</p>
+                        <p>2. 個人工作者：講師、專家、美業、身心靈</p>
+                        <p>3. 業務人員：保險、理專、房仲、汽車、直銷</p> 
+                        <p>共通點是都需要流量，才有業績。</p>
+                        <p>以前找新客，可以下廣告；但廣告是競價機制，只會越來越貴，有發現嗎？</p>
+                        <p>所以你一定要來兩岸法拍接班人。</p>
+                        <p>穩定高收入的實際操盤分享，等你來學。</p>
                     </div>
-                    <h2>之前</h2>
-                    <ul>
-                        <li>❌ 每天忙到深夜，卻看不到成果。</li>
-                        <li>❌ 一邊工作一邊顧家，始終力不從心。</li>
-                        <li>❌ 想做品牌，卻沒方向又沒時間。</li>
-                        <li>❌ 用盡力氣推廣，收入仍不穩定。</li>
-                        <li>❌ 有能力有熱情，卻不懂變現方法。</li>
-                    </ul>
-                </div>
-                
-                <div class="vs-divider">
-                    <span>VS</span>
-                </div>
-                
-                <div class="after-box">
-                    <!-- 成功获客图片 -->
-                    <div class="comparison-image-wrapper">
-                        <img src="data/get customer.png" alt="成功獲客" class="comparison-image" loading="lazy">
+                    <div class="note-action">
+                        <button class="cta-button note-action-btn" onclick="openModal()">立即報名</button>
                     </div>
-                    <h2>之後</h2>
-                    <ul>
-                        <li>✅ 為自己創造客製化AI智能體打造創業SOP</li>
-                        <li>✅ 學會正確引流方式 直接主動找精準顧客</li>
-                        <li>✅ 收入自動運轉，時間自由又踏實。</li>
-                        <li>✅ 有清楚方向，每一步都看得見成果。</li>
-                        <li>✅ <strong>工作有熱情，生活也重新發光。</strong></li>
-                    </ul>
                 </div>
             </div>
         </div>
     </section>
-
-    <!-- 新日常场景 -->
-    <section class="new-daily-life">
-        <div class="container">
-            <h2 class="section-title special-title">有了AI+自媒體創業系統之後....</h2>
-            <div class="daily-scenarios">
-                <div class="scenario-item">
-                    <div class="scenario-icon">☀️</div>
-                    <p>起床時不再擔心要塞車出門"</p>
-                </div>
-                <div class="scenario-item">
-                    <div class="scenario-icon">🤖</div>
-                    <p>有客戶自動報名或預約了解服務</p>
-                </div>
-                <div class="scenario-item">
-                    <div class="scenario-icon">💼</div>
-                    <p>系統已自動發出感謝或回覆，加line 或 whatsapp 或 簡訊通知客戶</p>
-                </div>
-                <div class="scenario-item">
-                    <div class="scenario-icon">🎯</div>
-                    <p>有網路何必走馬路,有流量何必等客戶</p>
-                </div>
-                <div class="scenario-item">
-                    <div class="scenario-icon">⚡</div>
-                    <p>一人，就能撐起完整內容吸客系統</p>
-                </div>
-                <div class="scenario-item">
-                    <div class="scenario-icon">💰</div>
-                    <p>訓練團隊簡單複製</p>
-                </div>
-            </div>
-            <p class="highlight-text">✨ 這就是系統帶來的自由 ✨</p>
-        </div>
-    </section>
-
+-->
+    <img src="data/top3.png" alt="兩岸法拍接班人" class="video-below-image" loading="lazy" width="1200" height="430">
+    <img src="data/top4.png" alt="兩岸法拍接班人" class="video-below-image" loading="lazy" width="1200" height="630">
+    <img src="data/top5.png" alt="兩岸法拍接班人" class="video-below-image" loading="lazy" width="1200" height="630">
+    <img src="data/top6.png" alt="兩岸法拍接班人" class="video-below-image" loading="lazy" width="1200" height="630">
+    <img src="data/top7.png" alt="兩岸法拍接班人" class="video-below-image" loading="lazy" width="1200" height="630">
+    <img src="data/top8.png" alt="兩岸法拍接班人" class="video-below-image" loading="lazy" width="1200" height="630">
+    
     <!-- 系统演示案例 
     <section class="demo-cases">
         <div class="container">
@@ -260,87 +301,24 @@
     <!-- CTA中间区 -->
     <section class="mid-cta">
         <div class="container">
-            <p class="urgency-badge">報名人數已超過 92%，優惠隨時截止</p>
+            <p class="urgency-badge" data-i18n="urgency-badge">報名人數已超過 92%，優惠隨時截止</p>
             <div class="pricing">
-                <p class="original-price"> <span class="strikethrough">原價 NT$2,000元</span></p>
-                <p class="current-price">✅ 現在限時線上報名中 <span class="highlight">限時免費</span>！</p>
+                <p class="original-price"> <span class="strikethrough" data-i18n="mid-cta-original">原價 NT$2,000元</span></p>
+                <p class="current-price"><span data-i18n="mid-cta-current">✅ 現在限時線上報名中</span> <span class="highlight" data-i18n="highlight">限時免費</span>！</p>
             </div>
-            <button class="cta-button pulse">搶先報名</button>
-            <p class="package-info">AI+自媒體創業系統</p>
+            <button class="cta-button pulse" data-i18n="cta-button">搶先報名</button>
+            <p class="package-info" data-i18n="package-info">兩岸法拍接班人</p>
         </div>
     </section>
 
-    <!-- 学员评价 -->
-    <section class="testimonials">
-        <div class="container">
-            <h2 class="section-title stroke-title">真實學員回饋</h2>
-            
-            <div class="testimonials-grid">
-                <div class="testimonial-card">
-                    <div class="testimonial-header">
-                        <img src="data/1.png" alt="Louis Lin" class="avatar" loading="lazy">
-                        <div class="testimonial-info">
-                            <h4>林先生</h4>
-                            <p class="role">銀行經理</p>
-                            <div class="stars">⭐⭐⭐⭐⭐</div>
-                        </div>
-                    </div>
-                    <p class="testimonial-text">
-                        有了<strong>AI+自媒體創業系統</strong>，原來愛運動的我也能成為網路自媒體創業者， 
-                        直接跟著實操，收入很快超過我上班的收入，現在有非常多的時間可以騎腳踏車,爬山,游泳,練球,等等，<strong>生活品質大大提升</strong>
-                </div>
-
-                <div class="testimonial-card">
-                    <div class="testimonial-header">
-                        <img src="data/3.png" alt="陳麗卿" class="avatar" loading="lazy">
-                        <div class="testimonial-info">
-                            <h4>高小姐</h4>
-                            <p class="role">餐飲業者</p>
-                            <div class="stars">⭐⭐⭐⭐⭐</div>
-                        </div>
-                    </div>
-                    <p class="testimonial-text">
-                        報名<strong>AI+自媒體創業系統</strong>，一開始還有點懷疑，就試試吧。沒想到一啟動系統，
-                        不到一週，<strong>就有人自己找上門了！</strong>真的太神奇了
-                    </p>
-                </div>
-
-
-                <div class="testimonial-card">
-                    <div class="testimonial-header">
-                        <img src="data/4.png" alt="宜臻" class="avatar" loading="lazy">
-                        <div class="testimonial-info">
-                            <h4>曾小姐</h4>
-                            <p class="role">護理師</p>
-                            <div class="stars">⭐⭐⭐⭐⭐</div>
-                        </div>
-                    </div>
-                    <p class="testimonial-text">
-                        高壓力的工作環境下，如果沒有樂觀的心態，真的很難撐下去，很開心遇到<strong>AI+自媒體創業系統，</strong>本來還擔心太複雜，沒想到有團隊幫忙，<strong>不只找到方法與機會，</strong>
-                        還可以學會最先進的AI與自媒體變現能力，真的太棒了。
-                    </p>
-                </div>
-
-            </div>
-        </div>
-    </section>
+   
 
     <section class="hero-image-section">
         <div class="hero-image-wrapper">
-            <img src="data/AIMakeMoney.png" alt="AI+自媒體創業系統" class="hero-main-image" loading="eager">
+            <img src="data/AIMakeMoney.png" alt="兩岸法拍接班人" class="hero-main-image" loading="lazy" width="1200" height="630">
         </div>
     </section>
-    <section class="mid-cta">
-        <div class="container">
-            <p class="urgency-badge">報名人數已超過 92%，優惠隨時截止</p>
-            <div class="pricing">
-                <p class="original-price"> <span class="strikethrough">原價 NT$2,000元</span></p>
-                <p class="current-price">✅ 現在限時線上報名中 <span class="highlight">限時免費</span>！</p>
-            </div>
-            <button class="cta-button pulse">搶先報名</button>
-            <p class="package-info">AI+自媒體創業系統</p>
-        </div>
-    </section>
+    <button class="top5-cta" onclick="openModal()" aria-label="搶先報名">搶先報名</button>
 
     <!-- 包含内容 
     <section class="whats-included">
@@ -415,57 +393,13 @@
     </section>
 --> 
     <!-- FAQ区域 -->
-    <section class="faq-section">
-        <div class="container">
-            <h2 class="section-title">常見問題</h2>
-            <div class="faq-list">
-                <div class="faq-item">
-                    <div class="faq-question">
-                        <span>可以試試看嗎？</span>
-                        <span class="faq-icon">+</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>當然可以，系統目前很成熟，已經有非常多國家的學員配合。</p>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question">
-                        <span>系統是否可以開發海外市場？</span>
-                        <span class="faq-icon">+</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>這個系統在多個國家登記合法使用，所以可以支援多個國家開發。</p>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question">
-                        <span>需要學多久才會？</span>
-                        <span class="faq-icon">+</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>我們提供各種不同資源，您可以選擇自己需要的部分，學習時間因人而異，一般來說，學習時間在1-3周之間。</p>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question">
-                        <span>會影響原本的工作嗎？</span>
-                        <span class="faq-icon">+</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>完全不會影響原本的工作，當收入超過原本的工作收入時，您可以選擇辭職，專心做自己喜歡的事情。</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    <img src="data/top8.jpg" alt="兩岸法拍接班人" class="video-below-image" loading="lazy" width="1200" height="630">
+    
 
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <p class="copyright" style="margin: 0;">© 2025. All Rights Reserved.</p>
+            <p class="copyright" style="margin: 0;" data-i18n="copyright">© 2025. All Rights Reserved.</p>
         </div>
     </footer>
 
@@ -474,8 +408,8 @@
         <div class="modal-content">
             <span class="close-modal">&times;</span>
             <div class="modal-header">
-                <h2>🎉 立即獲取優惠</h2>
-                <p class="modal-subtitle">填寫資料，開始您的AI自動引客之旅</p>
+                <h2 data-i18n="modal-title">🎉 立即獲取優惠</h2>
+                <p class="modal-subtitle" data-i18n="modal-subtitle">填寫資料，開始您的AI自媒體創業之旅</p>
             </div>
             
             <div class="order-form-wrapper">
@@ -525,79 +459,72 @@
                     <form id="orderForm" class="order-form" method="POST">
                         
                         <div class="form-section">
-                            <h3>📋 您的資料</h3>
+                            <h3 data-i18n="form-section-title">📋 您的資料</h3>
                             
                             <div class="form-group">
-                                <label for="fullName">姓名(實名制) <span class="required">*</span></label>
-                                <input type="text" id="fullName" name="姓名" required placeholder="請輸入您的全名">
+                                <label for="fullName"><span data-i18n="form-name">姓名(實名制)</span> <span class="required">*</span></label>
+                                <input type="text" id="fullName" name="姓名" required data-i18n="form-name-placeholder" placeholder="請輸入您的全名">
                             </div>
                             
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label for="email">電子郵件 <span class="required">*</span></label>
-                                    <input type="email" id="email" name="電子郵件" required placeholder="your@email.com">
+                                    <label for="email"><span data-i18n="form-email">電子郵件</span> <span class="required">*</span></label>
+                                    <input type="email" id="email" name="電子郵件" required data-i18n="form-email-placeholder" placeholder="your@email.com">
                                 </div>
                                 
                                 <div class="form-group">
-                                    <label for="phone">電話號碼 <span class="required"></span></label>
-                                    <input type="tel" id="phone" name="電話號碼" placeholder="+886 912345678">
+                                    <label for="phone"><span data-i18n="form-phone">電話號碼</span> <span class="required"></span></label>
+                                    <input type="tel" id="phone" name="電話號碼" data-i18n="form-phone-placeholder" placeholder="+886 912345678">
                                 </div>
                             </div>
                             
                             <div class="form-group">
-                                <label for="country">國家/地區 <span class="required"></span></label>
-                                <select id="country" name="國家地區">
-                                    <option value="">請選擇...</option>
-                                    <option value="TW" selected>台灣 Taiwan</option>
-                                    <!--
-                                    <option value="HK">香港 Hong Kong</option>
-                                    <option value="SG">新加坡 Singapore</option>
-                                    <option value="MY">馬來西亞 Malaysia</option>
-                                    <option value="CN">中國 China</option>
-                                    <option value="US">美國 United States</option>
-                                    <option value="other">其他 Other</option>
-                                    -->
+                                <label for="country"><span data-i18n="form-country">國家/地區</span> <span class="required">*</span></label>
+                                <select id="country" name="國家地區" required>
+                                    <option value="" selected data-i18n="form-country-placeholder">請選擇...</option>
+                                    <option value="TW" data-i18n="form-country-tw">台灣 Taiwan</option>
+                                    <option value="MY" data-i18n="form-country-my">馬來西亞 Malaysia (Kuala Lumpur)</option>
                                 </select>
                             </div>
                             
                             <div class="form-group">
-                                <label for="industry">您的行業 <span class="required">*</span></label>
+                                <label for="industry"><span data-i18n="form-industry">您的行業</span> <span class="required">*</span></label>
                                 <select id="industry" name="行業" required>
-                                    <option value="">請選擇...</option>
-                                    <option value="spiritual">身心靈導師</option>
-                                    <option value="beauty">美容 / 美髮</option>
-                                    <option value="education">教育 / 培訓</option>
-                                    <option value="insurance">保險 / 金融</option>
-                                    <option value="realestate">房地產</option>
-                                    <option value="consultant">諮詢顧問</option>
-                                    <option value="freelancer">自由工作者</option>
-                                    <option value="coach">個人教練</option>
-                                    <option value="ecommerce">電商 / 微商</option>
-                                    <option value="other">其他</option>
+                                    <option value="" data-i18n="form-industry-placeholder">請選擇...</option>
+                                    <option value="spiritual" data-i18n="form-industry-spiritual">身心靈導師</option>
+                                    <option value="beauty" data-i18n="form-industry-beauty">美容 / 美髮</option>
+                                    <option value="education" data-i18n="form-industry-education">教育 / 培訓</option>
+                                    <option value="insurance" data-i18n="form-industry-insurance">保險 / 金融</option>
+                                    <option value="realestate" data-i18n="form-industry-realestate">房地產</option>
+                                    <option value="consultant" data-i18n="form-industry-consultant">諮詢顧問</option>
+                                    <option value="freelancer" data-i18n="form-industry-freelancer">自由工作者</option>
+                                    <option value="coach" data-i18n="form-industry-coach">個人教練</option>
+                                    <option value="ecommerce" data-i18n="form-industry-ecommerce">電商 / 微商</option>
+                                    <option value="other" data-i18n="form-industry-other">其他</option>
                                 </select>
                             </div>
                             
                             <div class="form-group">
-                                <label for="region">希望評估時間地點 <span class="required">*</span></label>
+                                <label for="region"><span data-i18n="form-region">希望評估時間地點</span> <span class="required">*</span></label>
                                 <select id="region" name="評估地區" required>
-                                    <option value="">載入中...</option>
+                                    <option value="" data-i18n="form-region-loading">載入中...</option>
                                     <!-- 選項將從 Google Sheet 動態載入 -->
                                 </select>
-                                <small style="color: #999; font-size: 0.85rem; margin-top: 5px; display: block;">
+                                <small style="color: #999; font-size: 0.85rem; margin-top: 5px; display: block;" data-i18n="form-region-hint">
                                     💡 地點由系統自動更新
                                 </small>
                             </div>
                             
                             <div class="form-group">
-                                <label for="lineId">LINE ID（選填，方便我們聯繫您）</label>
-                                <input type="text" id="lineId" name="LINE_ID" placeholder="請輸入您的 LINE ID">
-                                <small style="color: #666; font-size: 0.85rem; margin-top: 5px; display: block;">💡 提供 LINE ID 讓我們能更快速為您服務</small>
+                                <label for="lineId" data-i18n="form-line">LINE ID（選填，方便我們聯繫您）</label>
+                                <input type="text" id="lineId" name="LINE_ID" data-i18n="form-line-placeholder" placeholder="請輸入您的 LINE ID">
+                                <small style="color: #666; font-size: 0.85rem; margin-top: 5px; display: block;" data-i18n="form-line-hint">💡 提供 LINE ID 讓我們能更快速為您服務</small>
                             </div>
                             
                             <div class="form-group">
-                                <label for="whatsapp">WhatsApp 號碼（選填）</label>
-                                <input type="tel" id="whatsapp" name="WhatsApp號碼" placeholder="+886 912 345 678">
-                                <small style="color: #666; font-size: 0.85rem; margin-top: 5px; display: block;">💡 提供 WhatsApp 讓我們能透過多種方式聯繫您</small>
+                                <label for="whatsapp" data-i18n="form-whatsapp">WhatsApp 號碼（選填）</label>
+                                <input type="tel" id="whatsapp" name="WhatsApp號碼" data-i18n="form-whatsapp-placeholder" placeholder="+886 912 345 678">
+                                <small style="color: #666; font-size: 0.85rem; margin-top: 5px; display: block;" data-i18n="form-whatsapp-hint">💡 提供 WhatsApp 讓我們能透過多種方式聯繫您</small>
                             </div>
                         </div>
                         <!--
@@ -616,13 +543,13 @@
                         <!-- 提交按鈕 -->
                         <div class="form-buttons">
                             <button type="submit" id="submitBtn" class="submit-info-btn">
-                                <span>📝 提交資料</span>
+                                <span data-i18n="form-submit">📝 提交資料</span>
                             </button>
                         </div>
                         
                         <div class="secure-notice">
                             <span>🔒</span>
-                            <span>您的資料將安全受到保護</span>
+                            <span data-i18n="form-secure">您的資料將安全受到保護</span>
                         </div>
                         <!--
                         <div class="view-data-link">
@@ -634,7 +561,8 @@
         </div>
     </div>
 
-    <script src="script.js?v=2024110201"></script>
+    <script src="translations.js?v=2024112202" defer></script>
+    <script src="script.js?v=2024112202" defer></script>
 </body>
 </html>
 

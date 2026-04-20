@@ -242,45 +242,6 @@ function showSuccessPage(userName, userRegion) {
                 您已成功報名${regionText}，
             </p>
             
-            <div style="margin: 30px auto; max-width: 500px;">
-                <h3 style="color: #333; margin-bottom: 20px; font-size: 1.3rem; text-align: center;">🎉 立即聯繫我們</h3>
-                
-                <!-- LINE 區塊 -->
-                <div class="contact-section" style="background: linear-gradient(135deg, #06C755 0%, #00B900 100%); padding: 25px; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(6, 199, 85, 0.3);">
-                    <h4 style="color: white; margin-bottom: 15px; font-size: 1.1rem;">
-                        💬 透過 LINE 聯繫
-                    </h4>
-                    <div class="qr-code-container" style="background: white; padding: 20px; border-radius: 10px; display: inline-block; margin-bottom: 10px;">
-                        <img src="data/line-qrcode.png.jpg" alt="LINE QR Code" style="width: 180px; height: 180px; display: block;" onerror="this.style.display='none'; this.parentElement.innerHTML='<p style=color:#666;padding:20px>QR Code 載入中...</p>'">
-                    </div>
-                    <p style="color: white; font-size: 0.9rem; opacity: 0.95; margin-top: 10px;">
-                        掃描 QR Code 加入 LINE<br>
-                        (密碼:13579)
-                    </p>
-                </div>
-                
-                <!-- WhatsApp 區塊 -->
-                <div class="contact-section" style="background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);">
-                    <h4 style="color: white; margin-bottom: 15px; font-size: 1.1rem;">
-                        📱 透過 WhatsApp 聯繫
-                    </h4>
-                    <a href="https://wa.me/886975497841?text=${encodeURIComponent('您好，我是 ' + userName + '，已填寫表單，想了解兩岸法拍接班人')}" 
-                       target="_blank"
-                       style="display: inline-block; background: white; color: #128C7E; padding: 15px 40px; border-radius: 30px; text-decoration: none; font-weight: bold; font-size: 1.1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: transform 0.2s;"
-                       onmouseover="this.style.transform='scale(1.05)'"
-                       onmouseout="this.style.transform='scale(1)'">
-                        🟢 立即開啟 WhatsApp
-                    </a>
-                    <p style="color: white; font-size: 0.85rem; opacity: 0.9; margin-top: 15px;">
-                        點擊按鈕將自動開啟 WhatsApp 對話
-                    </p>
-                </div>
-                
-                <p style="color: #666; font-size: 0.9rem; text-align: center; margin-top: 20px;">
-                    ⚡ 選擇您方便的聯繫方式，我們將立即為您服務
-                </p>
-            </div>
-            
             <button onclick="location.reload()" style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: white; border: none; padding: 15px 40px; font-size: 1.1rem; border-radius: 30px; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);">
                 關閉
             </button>

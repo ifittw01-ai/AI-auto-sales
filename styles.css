@@ -57,6 +57,14 @@ body {
     object-fit: cover;
 }
 
+.hero-top-image {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+}
+
 /* 顶部横幅 */
 .top-banner {
     background: var(--gradient-primary);
@@ -1385,6 +1393,23 @@ body {
 
 /* 响应式设计 */
 @media (max-width: 768px) {
+    .hero-image-section {
+        padding: 0;
+        margin: 0;
+    }
+
+    .hero-top-image {
+        width: 100%;
+        height: auto;
+        max-width: 100%;
+        object-fit: contain;
+    }
+
+    .hero-image-wrapper {
+        padding: 0;
+        margin: 0;
+    }
+
     .main-headline {
         font-size: 1.8rem;
     }

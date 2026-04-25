@@ -355,15 +355,9 @@ ${customerName}，
 
 歡迎您的到來！
 
-如欲詢問問題，請點選以下連結加入官方社群：
-👉 https://line.me/ti/g2/lwbHM8cXtERXRSpCKRNz1q7769jgTxzsKA7iTw?utm_source=invitation&utm_medium=link_copy&utm_campaign=default
-
-🔑 密碼：13579
-
-我們期待與您在社群中見面，一起探索 AI 創業的無限可能！🚀
-
+我們期待與您見面！🚀
 ---
-AI+自媒體創業系統 團隊
+兩岸法拍接班人 團隊
       `.trim();
       
       try {

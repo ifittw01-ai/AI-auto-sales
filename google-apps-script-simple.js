@@ -211,12 +211,22 @@ function doGet(e) {
     // 获取评估地点列表
     if (action === 'getRegions') {
       const regions = getRegionList();
-      
-      return ContentService.createTextOutput(JSON.stringify({
+      const payload = JSON.stringify({
         success: true,
         regions: regions,
         count: regions.length
-      })).setMimeType(ContentService.MimeType.JSON);
+      });
+
+      // JSONP：供 LINE 內建瀏覽器等無法正常 fetch 的環境使用
+      const callback = e.parameter.callback;
+      if (callback) {
+        const safeCallback = String(callback).replace(/[^\w$.]/g, '');
+        return ContentService.createTextOutput(safeCallback + '(' + payload + ')')
+          .setMimeType(ContentService.MimeType.JAVASCRIPT);
+      }
+
+      return ContentService.createTextOutput(payload)
+        .setMimeType(ContentService.MimeType.JSON);
     }
     
     // 默认响应

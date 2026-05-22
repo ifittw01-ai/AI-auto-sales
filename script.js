@@ -254,6 +254,37 @@ function showSuccessPage(userName, userRegion) {
     }, 100);
 }
 
+// 是否為 LINE 內建瀏覽器
+function isLineInAppBrowser() {
+    const ua = navigator.userAgent || '';
+    return /Line\//i.test(ua) || /LIFF/i.test(ua);
+}
+
+// LINE / iOS：修復模態框內 select 無法點選
+function initLineSelectFix() {
+    const modal = document.getElementById('orderModal');
+    if (!modal) return;
+
+    const selects = modal.querySelectorAll('select');
+    const activate = () => modal.classList.add('select-active');
+    const deactivate = () => modal.classList.remove('select-active');
+
+    selects.forEach((select) => {
+        ['mousedown', 'touchstart', 'click'].forEach((eventName) => {
+            select.addEventListener(eventName, (e) => {
+                e.stopPropagation();
+                activate();
+            }, eventName === 'touchstart' ? { passive: true } : false);
+        });
+
+        select.addEventListener('focus', activate);
+        select.addEventListener('blur', () => {
+            setTimeout(deactivate, 300);
+        });
+        select.addEventListener('change', deactivate);
+    });
+}
+
 // 初始化模态框事件
 function initModal() {
     const modal = document.getElementById('orderModal');
@@ -264,19 +295,23 @@ function initModal() {
         closeBtn.addEventListener('click', closeModal);
     }
     
-    // 点击模态框外部关闭
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            closeModal();
-        }
-    });
+    // 点击模态框外部关闭（不影響 select 點擊）
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+    }
     
     // ESC键关闭
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && modal.classList.contains('show')) {
+        if (e.key === 'Escape' && modal && modal.classList.contains('show')) {
             closeModal();
         }
     });
+
+    initLineSelectFix();
 }
 
 // ========================================
@@ -590,61 +625,108 @@ document.addEventListener('visibilitychange', () => {
 // ========================================
 // 動態加載評估地點（從 Google Apps Script 獲取）
 // ========================================
-async function loadRegionOptions() {
+
+const DEFAULT_REGION_OPTIONS = [
+    { id: '2', text: '11/3 星期一 晚上 7:00~9:00 捷運新店區公所站一號出口1分鐘到 北新路一段159號2樓' },
+    { id: '3', text: '11/5 星期三 下午 2:00~4:00 捷運新店區公所站一號出口1分鐘到 北新路一段159號2樓' }
+];
+
+function populateRegionSelect(regionSelect, regions) {
+    regionSelect.innerHTML = '<option value="">請選擇...</option>';
+    regions.forEach((region) => {
+        const option = document.createElement('option');
+        option.value = region.id;
+        option.textContent = region.text;
+        regionSelect.appendChild(option);
+    });
+    regionSelect.disabled = false;
+    regionSelect.removeAttribute('aria-busy');
+}
+
+function fetchRegionsJsonp() {
+    return new Promise((resolve, reject) => {
+        const callbackName = 'jsonpRegions_' + Date.now();
+        const timeout = setTimeout(() => {
+            cleanup();
+            reject(new Error('JSONP timeout'));
+        }, 8000);
+
+        function cleanup() {
+            clearTimeout(timeout);
+            delete window[callbackName];
+            if (script.parentNode) {
+                script.parentNode.removeChild(script);
+            }
+        }
+
+        window[callbackName] = (data) => {
+            cleanup();
+            resolve(data);
+        };
+
+        const script = document.createElement('script');
+        script.src = GOOGLE_SCRIPT_URL + '?action=getRegions&lang=zh-TW&callback=' + callbackName;
+        script.onerror = () => {
+            cleanup();
+            reject(new Error('JSONP load error'));
+        };
+        document.body.appendChild(script);
+    });
+}
+
+async function fetchRegionsWithTimeout(timeoutMs = 8000) {
+    const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    const timer = controller ? setTimeout(() => controller.abort(), timeoutMs) : null;
+
     try {
-        const regionSelect = document.getElementById('region');
-        
-        if (!regionSelect) {
-            console.warn('⚠️ 找不到評估地區選單元素');
-            return;
+        const response = await fetch(
+            GOOGLE_SCRIPT_URL + '?action=getRegions&lang=zh-TW',
+            controller ? { signal: controller.signal } : undefined
+        );
+        if (!response.ok) {
+            throw new Error('HTTP ' + response.status);
         }
-        
-        console.log('📍 正在載入評估地點選項...');
-        
-        // 顯示載入中
-        regionSelect.innerHTML = '<option value="">載入中...</option>';
-        regionSelect.disabled = true;
-        
-        const response = await fetch(GOOGLE_SCRIPT_URL + '?action=getRegions&lang=zh-TW');
-        const result = await response.json();
-        
-        if (result.success && result.regions && result.regions.length > 0) {
-            // 清空現有選項
-            regionSelect.innerHTML = '<option value="">請選擇...</option>';
-            
-            // 動態添加選項
-            result.regions.forEach(region => {
-                const option = document.createElement('option');
-                option.value = region.id;
-                option.textContent = region.text;
-                regionSelect.appendChild(option);
-            });
-            
-            regionSelect.disabled = false;
-            console.log('✅ 成功載入 ' + result.regions.length + ' 個評估地點');
-        } else {
-            console.warn('⚠️ 載入評估地點失敗，使用預設選項');
-            // 使用預設選項作為後備
-            regionSelect.innerHTML = `
-                <option value="">請選擇...</option>
-                <option value="2">11/3 星期一 晚上 7:00~9:00 捷運新店區公所站一號出口1分鐘到 北新路一段159號2樓</option>
-                <option value="3">11/5 星期三 下午 2:00~4:00 捷運新店區公所站一號出口1分鐘到 北新路一段159號2樓</option>
-            `;
-            regionSelect.disabled = false;
+        return await response.json();
+    } finally {
+        if (timer) clearTimeout(timer);
+    }
+}
+
+async function loadRegionOptions() {
+    const regionSelect = document.getElementById('region');
+
+    if (!regionSelect) {
+        console.warn('⚠️ 找不到評估地區選單元素');
+        return;
+    }
+
+    console.log('📍 正在載入評估地點選項...');
+
+    // LINE 內建瀏覽器：切勿 disabled，否則選單無法操作
+    regionSelect.disabled = false;
+    regionSelect.setAttribute('aria-busy', 'true');
+
+    // 先顯示可選的預設選項，確保即使 API 失敗也能報名
+    populateRegionSelect(regionSelect, DEFAULT_REGION_OPTIONS);
+
+    let result = null;
+
+    try {
+        result = await fetchRegionsWithTimeout(8000);
+    } catch (fetchError) {
+        console.warn('⚠️ fetch 載入失敗，嘗試 JSONP:', fetchError);
+        try {
+            result = await fetchRegionsJsonp();
+        } catch (jsonpError) {
+            console.warn('⚠️ JSONP 也失敗，使用預設選項:', jsonpError);
         }
-    } catch (error) {
-        console.error('❌ 載入評估地點錯誤:', error);
-        
-        // 出錯時使用預設選項
-        const regionSelect = document.getElementById('region');
-        if (regionSelect) {
-            regionSelect.innerHTML = `
-                <option value="">請選擇...</option>
-                <option value="2">11/3 星期一 晚上 7:00~9:00 捷運新店區公所站一號出口1分鐘到 北新路一段159號2樓</option>
-                <option value="3">11/5 星期三 下午 2:00~4:00 捷運新店區公所站一號出口1分鐘到 北新路一段159號2樓</option>
-            `;
-            regionSelect.disabled = false;
-        }
+    }
+
+    if (result && result.success && result.regions && result.regions.length > 0) {
+        populateRegionSelect(regionSelect, result.regions);
+        console.log('✅ 成功載入 ' + result.regions.length + ' 個評估地點');
+    } else if (isLineInAppBrowser()) {
+        console.log('ℹ️ LINE 瀏覽器：使用預設評估地點選項');
     }
 }
 

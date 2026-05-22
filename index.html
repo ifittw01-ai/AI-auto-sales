@@ -40,7 +40,6 @@
     
     <!-- 预加载关键资源 -->
     <link rel="preload" href="styles.css" as="style">
-    <link rel="preload" href="translations.js" as="script">
     <link rel="preload" href="script.js" as="script">
     
     <!-- DNS 预解析 -->
@@ -613,8 +612,8 @@
                             <div class="form-group">
                                 <label for="country"><span data-i18n="form-country">國家/地區</span> <span class="required">*</span></label>
                                 <select id="country" name="國家地區" required>
-                                    <option value="" selected data-i18n="form-country-placeholder">請選擇...</option>
-                                    <option value="TW" data-i18n="form-country-tw">台灣 Taiwan</option>
+                                    <option value="" data-i18n="form-country-placeholder">請選擇...</option>
+                                    <option value="TW" selected data-i18n="form-country-tw">台灣 Taiwan</option>
                                     <!--<option value="MY" data-i18n="form-country-my">馬來西亞 Malaysia (Kuala Lumpur)</option>-->
                                 </select>
                             </div>
@@ -639,8 +638,8 @@
                             <div class="form-group">
                                 <label for="region"><span data-i18n="form-region">希望評估時間地點</span> <span class="required">*</span></label>
                                 <select id="region" name="評估地區" required>
-                                    <option value="" data-i18n="form-region-loading">載入中...</option>
-                                    <!-- 選項將從 Google Sheet 動態載入 -->
+                                    <option value="" data-i18n="form-region-placeholder">請選擇...</option>
+                                    <!-- 選項將從 Google Sheet 動態載入；載入失敗時仍可手動選擇 -->
                                 </select>
                                 <small style="color: #999; font-size: 0.85rem; margin-top: 5px; display: block;" data-i18n="form-region-hint">
                                     💡 地點由系統自動更新
@@ -693,8 +692,7 @@
         </div>
     </div>
 
-    <script src="translations.js?v=2024112202" defer></script>
-    <script src="script.js?v=2024112202" defer></script>
+    <script src="script.js?v=20260522" defer></script>
 </body>
 </html>
 

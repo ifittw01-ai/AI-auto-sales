@@ -936,8 +936,19 @@ body {
     height: 100%;
     overflow: auto;
     background-color: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(5px);
+    /* LINE 內建瀏覽器：backdrop-filter 可能導致下拉選單無法點選 */
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
     animation: fadeIn 0.3s ease;
+}
+
+/* LINE / iOS：展開 select 時避免父層 overflow 裁切原生選單 */
+.modal.select-active {
+    overflow: visible;
+}
+
+.modal.select-active .modal-content {
+    overflow: visible;
 }
 
 @keyframes fadeIn {
@@ -1200,10 +1211,17 @@ body {
     padding: 12px 15px;
     border: 2px solid #e0e0e0;
     border-radius: 8px;
-    font-size: 1rem;
+    font-size: 16px; /* 避免 iOS/LINE 縮放並改善觸控 */
     font-family: inherit;
     transition: all 0.3s ease;
     background: var(--white);
+    -webkit-appearance: menulist;
+    appearance: menulist;
+    min-height: 48px;
+    touch-action: manipulation;
+    cursor: pointer;
+    position: relative;
+    z-index: 2;
 }
 
 .form-group input:focus,

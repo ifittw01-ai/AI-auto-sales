@@ -424,6 +424,19 @@ function initOrderForm() {
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         
+        // 驗證評估地點（radio 區塊）
+        const regionRadio = form.querySelector('input[name="評估地區"]:checked');
+        if (!regionRadio) {
+            const regionBox = document.getElementById('regionOptions');
+            if (regionBox) {
+                regionBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                regionBox.style.outline = '2px solid #e74c3c';
+                setTimeout(() => { regionBox.style.outline = ''; }, 2000);
+            }
+            alert('請選擇希望評估的時間地點');
+            return;
+        }
+
         // 驗證表單
         if (!form.checkValidity()) {
             form.reportValidity();
@@ -462,16 +475,9 @@ function initOrderForm() {
             formData.set('行業', industryText);
         }
         
-        // 評估地區（時間地點）
-        const regionSelect = document.getElementById('region');
-        let userRegion = '';
-        if (regionSelect && regionSelect.selectedIndex > 0) {
-            const selectedOption = regionSelect.options[regionSelect.selectedIndex];
-            const regionText = selectedOption.text;
-            
-            formData.set('評估地區', regionText);
-            userRegion = regionText; // 保存用于显示
-        }
+        // 評估地區（時間地點）— 點選區塊
+        let userRegion = regionRadio.value;
+        formData.set('評估地區', userRegion);
         
         // 添加推廣代碼
         if (refCode) {
@@ -631,16 +637,38 @@ const DEFAULT_REGION_OPTIONS = [
     { id: '3', text: '11/5 星期三 下午 2:00~4:00 捷運新店區公所站一號出口1分鐘到 北新路一段159號2樓' }
 ];
 
-function populateRegionSelect(regionSelect, regions) {
-    regionSelect.innerHTML = '<option value="">請選擇...</option>';
-    regions.forEach((region) => {
-        const option = document.createElement('option');
-        option.value = region.id;
-        option.textContent = region.text;
-        regionSelect.appendChild(option);
+function populateRegionOptions(regions) {
+    const container = document.getElementById('regionOptions');
+    if (!container) return;
+
+    container.innerHTML = '';
+    container.removeAttribute('aria-busy');
+
+    if (!regions || regions.length === 0) {
+        container.innerHTML = '<p class="region-options-empty">目前尚無可選時段，請稍後再試</p>';
+        return;
+    }
+
+    regions.forEach((region, index) => {
+        const label = document.createElement('label');
+        label.className = 'region-option';
+
+        const input = document.createElement('input');
+        input.type = 'radio';
+        input.name = '評估地區';
+        input.value = region.text;
+        if (index === 0) {
+            input.required = true;
+        }
+
+        const span = document.createElement('span');
+        span.className = 'region-option-label';
+        span.textContent = region.text;
+
+        label.appendChild(input);
+        label.appendChild(span);
+        container.appendChild(label);
     });
-    regionSelect.disabled = false;
-    regionSelect.removeAttribute('aria-busy');
 }
 
 function fetchRegionsJsonp() {
@@ -693,21 +721,18 @@ async function fetchRegionsWithTimeout(timeoutMs = 8000) {
 }
 
 async function loadRegionOptions() {
-    const regionSelect = document.getElementById('region');
+    const container = document.getElementById('regionOptions');
 
-    if (!regionSelect) {
-        console.warn('⚠️ 找不到評估地區選單元素');
+    if (!container) {
+        console.warn('⚠️ 找不到評估地區選項容器');
         return;
     }
 
     console.log('📍 正在載入評估地點選項...');
-
-    // LINE 內建瀏覽器：切勿 disabled，否則選單無法操作
-    regionSelect.disabled = false;
-    regionSelect.setAttribute('aria-busy', 'true');
+    container.setAttribute('aria-busy', 'true');
 
     // 先顯示可選的預設選項，確保即使 API 失敗也能報名
-    populateRegionSelect(regionSelect, DEFAULT_REGION_OPTIONS);
+    populateRegionOptions(DEFAULT_REGION_OPTIONS);
 
     let result = null;
 
@@ -723,7 +748,7 @@ async function loadRegionOptions() {
     }
 
     if (result && result.success && result.regions && result.regions.length > 0) {
-        populateRegionSelect(regionSelect, result.regions);
+        populateRegionOptions(result.regions);
         console.log('✅ 成功載入 ' + result.regions.length + ' 個評估地點');
     } else if (isLineInAppBrowser()) {
         console.log('ℹ️ LINE 瀏覽器：使用預設評估地點選項');

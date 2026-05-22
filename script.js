@@ -109,6 +109,12 @@ const REGION_NAMES = {
     'south': '南部'
 };
 
+// 國家/地區選項（點選區塊，value 為提交至表單的完整文字）
+const COUNTRY_OPTIONS = [
+    { value: '台灣 Taiwan', text: '台灣 Taiwan' }
+    // { value: '馬來西亞 Malaysia (Kuala Lumpur)', text: '馬來西亞 Malaysia (Kuala Lumpur)' },
+];
+
 // ========================================
 // 頁面功能
 // ========================================
@@ -424,7 +430,20 @@ function initOrderForm() {
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        // 驗證評估地點（radio 區塊）
+        // 驗證國家/地區（點選區塊）
+        const countryRadio = form.querySelector('input[name="國家地區"]:checked');
+        if (!countryRadio) {
+            const countryBox = document.getElementById('countryOptions');
+            if (countryBox) {
+                countryBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                countryBox.style.outline = '2px solid #e74c3c';
+                setTimeout(() => { countryBox.style.outline = ''; }, 2000);
+            }
+            alert('請選擇國家/地區');
+            return;
+        }
+
+        // 驗證評估地點（點選區塊）
         const regionRadio = form.querySelector('input[name="評估地區"]:checked');
         if (!regionRadio) {
             const regionBox = document.getElementById('regionOptions');
@@ -460,13 +479,8 @@ function initOrderForm() {
         // 準備表單資料
         const formData = new FormData(form);
         
-        // 🔄 獲取下拉選單的完整文字（而不是只有 value）
-        // 國家地區
-        const countrySelect = document.getElementById('country');
-        if (countrySelect && countrySelect.selectedIndex > 0) {
-            const countryText = countrySelect.options[countrySelect.selectedIndex].text;
-            formData.set('國家地區', countryText);
-        }
+        // 國家地區（點選區塊）
+        formData.set('國家地區', countryRadio.value);
         
         // 行業
         const industrySelect = document.getElementById('industry');
@@ -613,7 +627,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initScrollAnimations();
     initVideoTracking();
     
-    // 🆕 載入動態評估地點
+    initCountryOptions();
     loadRegionOptions();
 });
 
@@ -637,37 +651,66 @@ const DEFAULT_REGION_OPTIONS = [
     { id: '3', text: '11/5 星期三 下午 2:00~4:00 捷運新店區公所站一號出口1分鐘到 北新路一段159號2樓' }
 ];
 
-function populateRegionOptions(regions) {
-    const container = document.getElementById('regionOptions');
+function populatePickerOptions(containerId, fieldName, items, options = {}) {
+    const container = document.getElementById(containerId);
     if (!container) return;
+
+    const emptyMessage = options.emptyMessage || '目前尚無可選項目';
+    const optionClass = options.optionClass || 'picker-option';
+    const labelClass = options.labelClass || 'picker-option-label';
+    const defaultIndex = options.defaultIndex ?? 0;
 
     container.innerHTML = '';
     container.removeAttribute('aria-busy');
 
-    if (!regions || regions.length === 0) {
-        container.innerHTML = '<p class="region-options-empty">目前尚無可選時段，請稍後再試</p>';
+    if (!items || items.length === 0) {
+        container.innerHTML = '<p class="picker-options-empty">' + emptyMessage + '</p>';
         return;
     }
 
-    regions.forEach((region, index) => {
+    items.forEach((item, index) => {
+        const text = item.text || item.value;
+        const value = item.value !== undefined ? item.value : text;
+
         const label = document.createElement('label');
-        label.className = 'region-option';
+        label.className = optionClass;
 
         const input = document.createElement('input');
         input.type = 'radio';
-        input.name = '評估地區';
-        input.value = region.text;
+        input.name = fieldName;
+        input.value = value;
         if (index === 0) {
             input.required = true;
         }
+        if (index === defaultIndex) {
+            input.checked = true;
+        }
 
         const span = document.createElement('span');
-        span.className = 'region-option-label';
-        span.textContent = region.text;
+        span.className = labelClass;
+        span.textContent = text;
 
         label.appendChild(input);
         label.appendChild(span);
         container.appendChild(label);
+    });
+}
+
+function initCountryOptions() {
+    populatePickerOptions('countryOptions', '國家地區', COUNTRY_OPTIONS, {
+        defaultIndex: 0
+    });
+}
+
+function populateRegionOptions(regions) {
+    populatePickerOptions('regionOptions', '評估地區', regions.map((r) => ({
+        value: r.text,
+        text: r.text
+    })), {
+        emptyMessage: '目前尚無可選時段，請稍後再試',
+        optionClass: 'picker-option',
+        labelClass: 'picker-option-label',
+        defaultIndex: -1
     });
 }
 
@@ -729,6 +772,7 @@ async function loadRegionOptions() {
     }
 
     console.log('📍 正在載入評估地點選項...');
+    container.innerHTML = '<p class="picker-options-loading">載入中...</p>';
     container.setAttribute('aria-busy', 'true');
 
     // 先顯示可選的預設選項，確保即使 API 失敗也能報名

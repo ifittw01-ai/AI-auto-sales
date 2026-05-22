@@ -610,12 +610,8 @@
                             </div>
                             
                             <div class="form-group">
-                                <label for="country"><span data-i18n="form-country">國家/地區</span> <span class="required">*</span></label>
-                                <select id="country" name="國家地區" required>
-                                    <option value="" data-i18n="form-country-placeholder">請選擇...</option>
-                                    <option value="TW" selected data-i18n="form-country-tw">台灣 Taiwan</option>
-                                    <!--<option value="MY" data-i18n="form-country-my">馬來西亞 Malaysia (Kuala Lumpur)</option>-->
-                                </select>
+                                <span id="country-label" class="form-label-block"><span data-i18n="form-country">國家/地區</span> <span class="required">*</span></span>
+                                <div id="countryOptions" class="picker-options" role="radiogroup" aria-labelledby="country-label"></div>
                             </div>
                             <!--
                             <div class="form-group">
@@ -637,7 +633,7 @@
                             -->
                             <div class="form-group">
                                 <span id="region-label" class="form-label-block"><span data-i18n="form-region">希望評估時間地點</span> <span class="required">*</span></span>
-                                <div id="regionOptions" class="region-options" role="radiogroup" aria-labelledby="region-label">
+                                <div id="regionOptions" class="picker-options" role="radiogroup" aria-labelledby="region-label">
                                     <p class="region-options-loading">載入中...</p>
                                 </div>
                                 <small style="color: #999; font-size: 0.85rem; margin-top: 5px; display: block;" data-i18n="form-region-hint">
@@ -691,7 +687,7 @@
         </div>
     </div>
 
-    <script src="script.js?v=20260523" defer></script>
+    <script src="script.js?v=20260524" defer></script>
 </body>
 </html>
 

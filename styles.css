@@ -1235,7 +1235,7 @@ body {
     color: #aaa;
 }
 
-/* 評估時間地點（全部列出點選，LINE 友善） */
+/* 表單點選區塊（國家/評估地點，LINE 友善） */
 .form-label-block {
     display: block;
     margin-bottom: 8px;
@@ -1244,12 +1244,15 @@ body {
     font-size: 0.95rem;
 }
 
+.picker-options,
 .region-options {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
+.picker-options-loading,
+.picker-options-empty,
 .region-options-loading,
 .region-options-empty {
     color: #888;
@@ -1258,11 +1261,13 @@ body {
     padding: 12px 0;
 }
 
+.picker-option,
 .region-option {
     display: block;
     cursor: pointer;
 }
 
+.picker-option input[type="radio"],
 .region-option input[type="radio"] {
     position: absolute;
     opacity: 0;
@@ -1271,6 +1276,7 @@ body {
     pointer-events: none;
 }
 
+.picker-option-label,
 .region-option-label {
     display: block;
     padding: 14px 16px;
@@ -1283,12 +1289,14 @@ body {
     touch-action: manipulation;
 }
 
+.picker-option input[type="radio"]:checked + .picker-option-label,
 .region-option input[type="radio"]:checked + .region-option-label {
     border-color: #667eea;
     background: rgba(102, 126, 234, 0.08);
     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.12);
 }
 
+.picker-option-label:active,
 .region-option-label:active {
     transform: scale(0.99);
 }

@@ -1408,6 +1408,19 @@ body {
     box-shadow: none;
 }
 
+.submit-hint {
+    display: none;
+    margin: 10px 0 0;
+    text-align: center;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: #c0392b;
+}
+
+.submit-hint.is-visible {
+    display: block;
+}
+
 .picker-options.picker-options-error {
     outline: 2px solid #e74c3c;
     outline-offset: 2px;

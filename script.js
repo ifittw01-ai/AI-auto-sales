@@ -464,22 +464,55 @@ function isFormSubmittable() {
     return true;
 }
 
+function updateSubmitHint(message) {
+    const hint = document.getElementById('submitHint');
+    if (!hint) return;
+
+    if (message) {
+        hint.textContent = message;
+        hint.classList.add('is-visible');
+    } else {
+        hint.textContent = '';
+        hint.classList.remove('is-visible');
+    }
+}
+
 function updateSubmitButtonState() {
     const submitBtn = document.getElementById('submitBtn');
     if (!submitBtn) return;
 
+    const form = document.getElementById('orderForm');
     const canSubmit = isFormSubmittable();
     submitBtn.disabled = !canSubmit;
     submitBtn.classList.toggle('submit-info-btn--locked', !canSubmit);
     submitBtn.setAttribute('aria-disabled', String(!canSubmit));
 
-    if (regionsLoadState === 'loading' && !isSubmittingForm) {
-        submitBtn.title = '地點載入中，請稍候…';
-    } else if (!getCheckedPickerValue(document.getElementById('orderForm'), '評估地區')) {
-        submitBtn.title = '請先選擇希望評估的時間地點';
-    } else {
+    if (isSubmittingForm) {
+        updateSubmitHint('');
         submitBtn.removeAttribute('title');
+        return;
     }
+
+    if (regionsLoadState === 'loading') {
+        updateSubmitHint('⏳ 評估地點載入中，請稍候…');
+        submitBtn.title = '地點載入中，請稍候…';
+        return;
+    }
+
+    if (form && !getCheckedPickerValue(form, '評估地區')) {
+        updateSubmitHint('👆 請先點選上方的「希望評估時間地點」，才能提交報名');
+        submitBtn.title = '請先選擇希望評估的時間地點';
+        return;
+    }
+
+    if (form && !getCheckedPickerValue(form, '國家地區')) {
+        updateSubmitHint('👆 請先點選「國家/地區」');
+        submitBtn.title = '請選擇國家/地區';
+        return;
+    }
+
+    updateSubmitHint('');
+    submitBtn.removeAttribute('title');
 }
 
 function validateOrderFormBeforeSubmit(form) {

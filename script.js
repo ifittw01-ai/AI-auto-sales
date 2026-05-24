@@ -217,6 +217,7 @@ function openModal() {
     const modal = document.getElementById('orderModal');
     modal.classList.add('show');
     document.body.style.overflow = 'hidden'; // 防止背景滚动
+    updateSubmitButtonState();
 }
 
 // 关闭模态框
@@ -248,7 +249,7 @@ function showSuccessPage(userName, userRegion) {
                 您已成功報名${regionText}，
             </p>
             
-            <button onclick="location.reload()" style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: white; border: none; padding: 15px 40px; font-size: 1.1rem; border-radius: 30px; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);">
+            <button type="button" onclick="restoreOrderFormAfterSuccess()" style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: white; border: none; padding: 15px 40px; font-size: 1.1rem; border-radius: 30px; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);">
                 關閉
             </button>
         </div>
@@ -422,120 +423,227 @@ async function submitToGoogleForm(data) {
     }
 }
 
+// ========================================
+// 報名表單：提交狀態與驗證
+// ========================================
+let orderModalOriginalHTML = null;
+let regionsLoadState = 'loading'; // loading | ready
+let isSubmittingForm = false;
+const SUBMIT_BTN_DEFAULT_HTML = '<span data-i18n="form-submit">📝 提交資料</span>';
+
+function cacheOrderModalTemplate() {
+    const modalContent = document.querySelector('#orderModal .modal-content');
+    if (modalContent && !orderModalOriginalHTML) {
+        orderModalOriginalHTML = modalContent.innerHTML;
+    }
+}
+
+function highlightPickerError(containerId) {
+    const box = document.getElementById(containerId);
+    if (!box) return;
+    box.classList.add('picker-options-error');
+    box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function clearPickerError(containerId) {
+    document.getElementById(containerId)?.classList.remove('picker-options-error');
+}
+
+function getCheckedPickerValue(form, fieldName) {
+    const radio = form.querySelector('input[name="' + fieldName + '"]:checked');
+    return radio ? radio.value.trim() : '';
+}
+
+function isFormSubmittable() {
+    if (isSubmittingForm) return false;
+    if (regionsLoadState !== 'ready') return false;
+    const form = document.getElementById('orderForm');
+    if (!form) return false;
+    if (!getCheckedPickerValue(form, '國家地區')) return false;
+    if (!getCheckedPickerValue(form, '評估地區')) return false;
+    return true;
+}
+
+function updateSubmitButtonState() {
+    const submitBtn = document.getElementById('submitBtn');
+    if (!submitBtn) return;
+
+    const canSubmit = isFormSubmittable();
+    submitBtn.disabled = !canSubmit;
+    submitBtn.classList.toggle('submit-info-btn--locked', !canSubmit);
+    submitBtn.setAttribute('aria-disabled', String(!canSubmit));
+
+    if (regionsLoadState === 'loading' && !isSubmittingForm) {
+        submitBtn.title = '地點載入中，請稍候…';
+    } else if (!getCheckedPickerValue(document.getElementById('orderForm'), '評估地區')) {
+        submitBtn.title = '請先選擇希望評估的時間地點';
+    } else {
+        submitBtn.removeAttribute('title');
+    }
+}
+
+function validateOrderFormBeforeSubmit(form) {
+    if (regionsLoadState !== 'ready') {
+        alert('評估地點載入中，請稍候再提交');
+        highlightPickerError('regionOptions');
+        return { ok: false };
+    }
+
+    const countryValue = getCheckedPickerValue(form, '國家地區');
+    if (!countryValue) {
+        highlightPickerError('countryOptions');
+        alert('請選擇國家/地區');
+        return { ok: false };
+    }
+    clearPickerError('countryOptions');
+
+    const regionValue = getCheckedPickerValue(form, '評估地區');
+    if (!regionValue) {
+        highlightPickerError('regionOptions');
+        alert('請選擇希望評估的時間地點');
+        return { ok: false };
+    }
+    clearPickerError('regionOptions');
+
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return { ok: false };
+    }
+
+    return {
+        ok: true,
+        countryValue,
+        regionValue
+    };
+}
+
+function buildOrderFormData(form, countryValue, regionValue) {
+    const formData = new FormData(form);
+    const refCode = getReferralCode();
+
+    // 明確寫入點選欄位，避免漏送
+    formData.set('國家地區', countryValue);
+    formData.set('評估地區', regionValue);
+
+    const industrySelect = document.getElementById('industry');
+    if (industrySelect && industrySelect.selectedIndex > 0) {
+        formData.set('行業', industrySelect.options[industrySelect.selectedIndex].text);
+    }
+
+    if (refCode) {
+        formData.set('推廣代碼', refCode);
+    }
+    formData.set('ref', refCode || '');
+
+    return formData;
+}
+
+function bindPickerChangeListeners() {
+    const modal = document.getElementById('orderModal');
+    if (!modal || modal.dataset.pickerBound === '1') return;
+    modal.dataset.pickerBound = '1';
+
+    modal.addEventListener('change', (e) => {
+        if (e.target.matches('input[name="國家地區"]')) {
+            clearPickerError('countryOptions');
+            updateSubmitButtonState();
+        }
+        if (e.target.matches('input[name="評估地區"]')) {
+            clearPickerError('regionOptions');
+            updateSubmitButtonState();
+        }
+    });
+}
+
+// 成功後還原表單、預選台灣、重新載入地點
+function restoreOrderFormAfterSuccess() {
+    const modalContent = document.querySelector('#orderModal .modal-content');
+    if (modalContent && orderModalOriginalHTML) {
+        modalContent.innerHTML = orderModalOriginalHTML;
+    }
+
+    regionsLoadState = 'loading';
+    isSubmittingForm = false;
+
+    const modal = document.getElementById('orderModal');
+    if (modal) {
+        delete modal.dataset.pickerBound;
+    }
+
+    initCountryOptions();
+    bindOrderFormSubmit();
+    bindPickerChangeListeners();
+    loadRegionOptions();
+    closeModal();
+}
+
 // 處理表單提交（使用 Google Apps Script，支援動態推廣郵箱）
-function initOrderForm() {
+function bindOrderFormSubmit() {
     const form = document.getElementById('orderForm');
     const submitBtn = document.getElementById('submitBtn');
-    
+    if (!form || !submitBtn) return;
+    if (form.dataset.submitBound === '1') return;
+    form.dataset.submitBound = '1';
+
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
-        // 驗證國家/地區（點選區塊）
-        const countryRadio = form.querySelector('input[name="國家地區"]:checked');
-        if (!countryRadio) {
-            const countryBox = document.getElementById('countryOptions');
-            if (countryBox) {
-                countryBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                countryBox.style.outline = '2px solid #e74c3c';
-                setTimeout(() => { countryBox.style.outline = ''; }, 2000);
-            }
-            alert('請選擇國家/地區');
+
+        const validation = validateOrderFormBeforeSubmit(form);
+        if (!validation.ok) {
+            updateSubmitButtonState();
             return;
         }
 
-        // 驗證評估地點（點選區塊）
-        const regionRadio = form.querySelector('input[name="評估地區"]:checked');
-        if (!regionRadio) {
-            const regionBox = document.getElementById('regionOptions');
-            if (regionBox) {
-                regionBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                regionBox.style.outline = '2px solid #e74c3c';
-                setTimeout(() => { regionBox.style.outline = ''; }, 2000);
-            }
-            alert('請選擇希望評估的時間地點');
-            return;
-        }
-
-        // 驗證表單
-        if (!form.checkValidity()) {
-            form.reportValidity();
-            return;
-        }
-        
-        // 顯示載入狀態
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<span>⏳ 處理中...</span>';
-        
-        // 獲取用戶名稱
-        const userName = form.querySelector('[name="姓名"]').value;
-        
-        // 🎯 添加推廣代碼到表單（Google Script 會根據此判斷目標郵箱）
+        const { countryValue, regionValue } = validation;
+        const userName = form.querySelector('[name="姓名"]').value.trim();
         const refCode = getReferralCode();
         const targetEmail = getTargetEmail();
-        
+
+        isSubmittingForm = true;
+        submitBtn.disabled = true;
+        submitBtn.classList.add('submit-info-btn--locked');
+        submitBtn.innerHTML = '<span>⏳ 處理中...</span>';
+
+        const formData = buildOrderFormData(form, countryValue, regionValue);
+
         console.log('🔖 推廣代碼:', refCode || '無');
         console.log('📧 目標郵箱:', targetEmail);
-        
-        // 準備表單資料
-        const formData = new FormData(form);
-        
-        // 國家地區（點選區塊）
-        formData.set('國家地區', countryRadio.value);
-        
-        // 行業
-        const industrySelect = document.getElementById('industry');
-        if (industrySelect && industrySelect.selectedIndex > 0) {
-            const industryText = industrySelect.options[industrySelect.selectedIndex].text;
-            formData.set('行業', industryText);
-        }
-        
-        // 評估地區（時間地點）— 點選區塊
-        let userRegion = regionRadio.value;
-        formData.set('評估地區', userRegion);
-        
-        // 添加推廣代碼
-        if (refCode) {
-            formData.append('推廣代碼', refCode);
-        }
-        formData.append('ref', refCode || '');
-        
-        // 🔍 調試：打印所有提交的資料
         console.log('=== 📋 準備提交的表單資料 ===');
-        for (let [key, value] of formData.entries()) {
+        for (const [key, value] of formData.entries()) {
             console.log(`  ${key}: "${value}"`);
         }
         console.log('========================');
-        
+
         try {
-            console.log('📤 正在提交到 Google Apps Script...');
-            
-            // 提交到 Google Apps Script
             const response = await fetch(GOOGLE_SCRIPT_URL, {
                 method: 'POST',
                 body: formData
             });
-            
             const result = await response.json();
-            
+
             if (result.success) {
                 console.log('✅ 提交成功！郵件已發送到:', result.targetEmail || targetEmail);
-                
-                // 顯示成功頁面
-                showSuccessPage(userName, userRegion);
-                form.reset();
+                showSuccessPage(userName, regionValue);
             } else {
                 console.error('❌ 提交失敗:', result.message);
-                alert('❌ 提交失敗，請稍後再試或直接聯繫我們的 WhatsApp/LINE\n\n錯誤: ' + result.message);
+                alert('❌ 提交失敗，請稍後再試或直接聯繫我們\n\n錯誤: ' + result.message);
             }
         } catch (error) {
             console.error('⚠️ 提交錯誤:', error);
             alert('❌ 網路錯誤，請檢查網路連接後重試');
         } finally {
-            // 恢復按鈕狀態
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = '<span>📝 提交資料</span>';
+            isSubmittingForm = false;
+            submitBtn.innerHTML = SUBMIT_BTN_DEFAULT_HTML;
+            updateSubmitButtonState();
         }
     });
+}
+
+function initOrderForm() {
+    cacheOrderModalTemplate();
+    bindOrderFormSubmit();
+    bindPickerChangeListeners();
+    updateSubmitButtonState();
 }
 
 // 平滑滚动
@@ -622,14 +730,18 @@ document.addEventListener('DOMContentLoaded', () => {
     initFAQ();
     initCTAButtons();
     initModal();
-    initOrderForm();
     initSmoothScroll();
     initScrollAnimations();
     initVideoTracking();
-    
+
+    cacheOrderModalTemplate();
     initCountryOptions();
+    initOrderForm();
     loadRegionOptions();
 });
+
+// 供成功頁「關閉」按鈕呼叫
+window.restoreOrderFormAfterSuccess = restoreOrderFormAfterSuccess;
 
 // 监听页面可见性变化，暂停/恢复倒计时
 document.addEventListener('visibilitychange', () => {
@@ -665,6 +777,7 @@ function populatePickerOptions(containerId, fieldName, items, options = {}) {
 
     if (!items || items.length === 0) {
         container.innerHTML = '<p class="picker-options-empty">' + emptyMessage + '</p>';
+        updateSubmitButtonState();
         return;
     }
 
@@ -694,6 +807,8 @@ function populatePickerOptions(containerId, fieldName, items, options = {}) {
         label.appendChild(span);
         container.appendChild(label);
     });
+
+    updateSubmitButtonState();
 }
 
 function initCountryOptions() {
@@ -771,13 +886,14 @@ async function loadRegionOptions() {
         return;
     }
 
+    regionsLoadState = 'loading';
+    updateSubmitButtonState();
+
     console.log('📍 正在載入評估地點選項...');
-    container.innerHTML = '<p class="picker-options-loading">載入中...</p>';
+    container.innerHTML = '<p class="picker-options-loading">載入中，請稍候…</p>';
     container.setAttribute('aria-busy', 'true');
 
-    // 先顯示可選的預設選項，確保即使 API 失敗也能報名
-    populateRegionOptions(DEFAULT_REGION_OPTIONS);
-
+    let regionsToShow = DEFAULT_REGION_OPTIONS;
     let result = null;
 
     try {
@@ -792,11 +908,15 @@ async function loadRegionOptions() {
     }
 
     if (result && result.success && result.regions && result.regions.length > 0) {
-        populateRegionOptions(result.regions);
+        regionsToShow = result.regions;
         console.log('✅ 成功載入 ' + result.regions.length + ' 個評估地點');
-    } else if (isLineInAppBrowser()) {
-        console.log('ℹ️ LINE 瀏覽器：使用預設評估地點選項');
+    } else {
+        console.log('ℹ️ 使用預設評估地點選項');
     }
+
+    populateRegionOptions(regionsToShow);
+    regionsLoadState = 'ready';
+    updateSubmitButtonState();
 }
 
 // 添加急迫感效果

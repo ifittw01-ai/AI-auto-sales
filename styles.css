@@ -1399,10 +1399,21 @@ body {
     box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
 }
 
-.submit-info-btn:disabled {
-    opacity: 0.6;
+.submit-info-btn:disabled,
+.submit-info-btn.submit-info-btn--locked {
+    opacity: 0.45;
     cursor: not-allowed;
     transform: none;
+    background: #b0b0b0;
+    box-shadow: none;
+}
+
+.picker-options.picker-options-error {
+    outline: 2px solid #e74c3c;
+    outline-offset: 2px;
+    border-radius: 10px;
+    padding: 4px;
+    background: rgba(231, 76, 60, 0.06);
 }
 
 /* 購買按鈕 */

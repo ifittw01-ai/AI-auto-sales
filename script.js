@@ -858,7 +858,7 @@ function populateRegionOptions(regions) {
         emptyMessage: '目前尚無可選時段，請稍後再試',
         optionClass: 'picker-option',
         labelClass: 'picker-option-label',
-        defaultIndex: -1
+        defaultIndex: 0
     });
 }
 

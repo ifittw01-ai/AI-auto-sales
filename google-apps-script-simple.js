@@ -148,10 +148,9 @@ function saveCustomerToSheet(customerData) {
       
       // 添加标题行（加粗、背景色）
       const headers = [
-        '報名時間', '客戶姓名', '電話號碼', '電子郵件', 
-        '國家地區', '行業', '評估地區', 
-        'LINE ID', 'WhatsApp', '訂閱電子報',
-        '推廣代碼', '推廣人員姓名', '推廣人員郵箱'
+        '報名時間', '客戶姓名', '電話號碼', '電子郵件',
+        '國家地區', '行業', '評估地區',
+        'LINE ID', 'WhatsApp', '推廣代碼'
       ];
       
       sheet.appendRow(headers);
@@ -174,19 +173,16 @@ function saveCustomerToSheet(customerData) {
     // 添加客户数据
     const timestamp = new Date();
     const rowData = [
-      timestamp,                      // 报名时间
-      customerData.customerName,      // 客户姓名
-      customerData.customerPhone,     // 电话号码
-      customerData.customerEmail,     // 电子邮件
-      customerData.customerCountry,   // 国家地区
-      customerData.customerIndustry,  // 行业
-      customerData.customerRegion,    // 评估地区
-      customerData.customerLineId,    // LINE ID
-      customerData.customerWhatsapp,  // WhatsApp
-      customerData.newsletter,        // 訂閱電子報
-      customerData.refCode || '無',   // 推廣代碼
-      customerData.promoterName || '培訓法拍接班人',  // 推廣人員姓名
-      customerData.targetEmail        // 推廣人員郵箱
+      timestamp,                      // A 報名時間
+      customerData.customerName,      // B 客戶姓名
+      customerData.customerPhone,     // C 電話號碼
+      customerData.customerEmail,     // D 電子郵件
+      customerData.customerCountry,   // E 國家地區
+      customerData.customerIndustry,  // F 行業
+      customerData.customerRegion,    // G 評估地點
+      customerData.customerLineId,    // H LINE ID
+      customerData.customerWhatsapp,  // I WhatsApp
+      customerData.refCode || '無'    // J 推廣代碼
     ];
     
     sheet.appendRow(rowData);
@@ -265,7 +261,6 @@ function doPost(e) {
     const customerRegion = params['評估地區'] || '';
     const customerLineId = params['LINE_ID'] || params['LINE ID'] || '未提供';
     const customerWhatsapp = params['WhatsApp號碼'] || params['WhatsApp'] || '未提供';
-    const newsletter = params['訂閱電子報'] === 'on' ? '是' : '否';
     
     Logger.log('📧 准备发送邮件...');
     Logger.log('推广代码: ' + refCode);
@@ -285,10 +280,7 @@ function doPost(e) {
       customerRegion: customerRegion,
       customerLineId: customerLineId,
       customerWhatsapp: customerWhatsapp,
-      newsletter: newsletter,
-      refCode: refCode,
-      targetEmail: promoterInfo.email,
-      promoterName: promoterInfo.name
+      refCode: refCode
     };
     
     saveCustomerToSheet(customerData);
@@ -309,7 +301,6 @@ function doPost(e) {
 評估地區：${customerRegion}
 LINE ID：${customerLineId}
 WhatsApp：${customerWhatsapp}
-訂閱電子報：${newsletter}
 
 推廣代碼：${refCode || '無（預設）'}
 
